@@ -1,15 +1,16 @@
 import * as React from 'react';
 import {View, Text, Button} from 'react-native';
+import HomeScreen from '../../screens/HomeScreen';
 
 function HomeTab({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: '여긴 홈 스크린입니다.',
+      title: 'Home',
     });
   });
   return (
     <View>
-      <Text>HomeScreen</Text>
+      <HomeScreen />
     </View>
   );
 }

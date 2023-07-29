@@ -11,7 +11,7 @@ import {
 function MypageTab({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: '여긴 마이페이지 스크린입니다.',
+      title: 'Mypage',
     });
   });
   return (

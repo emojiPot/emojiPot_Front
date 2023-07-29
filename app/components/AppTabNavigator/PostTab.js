@@ -1,17 +1,26 @@
 import * as React from 'react';
-import {View, Text, Button} from 'react-native';
+import {Text, Image, TouchableOpacity} from 'react-native';
+import PostCreateScreen from '../../screens/PostCreateScreen';
+
+function BackBtn({navigation}) {
+  return (
+    <TouchableOpacity onPress={() => navigation.goBack()}>
+      <Image
+        source={require('../../assest/images/backBtn.png')}
+        style={{marginLeft: 20, width: 30, height: 30}}
+      />
+    </TouchableOpacity>
+  );
+}
 
 function PostTab({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: '여긴 글쓰기 스크린입니다.',
+      title: '글작성',
+      headerLeft: () => <BackBtn navigation={navigation} />, // 뒤로가기 버튼 추가
     });
   });
-  return (
-    <View>
-      <Text>PostTab</Text>
-    </View>
-  );
+  return <PostCreateScreen />;
 }
 
 export default PostTab;
