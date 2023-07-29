@@ -1,12 +1,3 @@
-// 정적 파일을 상대경로로 import하지 않기 위해서 만듦
-/*
-예시:
-<Image
-	style={styles.backgroundImage}
-	source={require('images/image02.jpg')}
-/>
-*/
-
 {
   "name": "assets",
   "version": "0.0.1"

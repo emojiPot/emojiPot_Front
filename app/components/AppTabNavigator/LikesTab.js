@@ -1,17 +1,17 @@
 import * as React from 'react';
 import {View, Text, Button} from 'react-native';
 
-function HomeScreen({navigation}) {
+function LikesTab({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: '여긴 홈 스크린입니다.',
+      title: '여긴 저장 스크린입니다.',
     });
   });
   return (
     <View>
-      <Text>HomeScreen</Text>
+      <Text>LikesTab</Text>
     </View>
   );
 }
 
-export default HomeScreen;
+export default LikesTab;
