@@ -17,6 +17,14 @@ import RegisterScreen from './screens/RegisterScreen';
 const Stack = createStackNavigator();
 // const Tab = createBottomTabNavigator();
 
+function BackBtn() {
+  return (
+    <Image
+      source={require('./assest/images/backBtn.png')}
+      style={{marginLeft: 20, width: 30, height: 30}}
+    />
+  );
+}
 function App() {
   return (
     // <NavigationContainer>
@@ -35,8 +43,24 @@ function App() {
           component={LogoutScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerBackImage: BackBtn,
+          }}
+        />
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerBackImage: BackBtn,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
