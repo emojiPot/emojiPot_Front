@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, ScrollView, StyleSheet} from 'react-native';
 import HomeScreen from '../../screens/HomeScreen';
 
 function HomeTab({navigation}) {
@@ -9,10 +9,18 @@ function HomeTab({navigation}) {
     });
   });
   return (
-    <View>
+    <View style={styles.container}>
       <HomeScreen />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+  },
+});
 
 export default HomeTab;

@@ -4,10 +4,12 @@ import {
   Text,
   TextInput,
   Button,
+  Image,
+  TouchableOpacity,
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {
   widthPercentageToDP as wp,
@@ -17,19 +19,11 @@ import {
 const PostCreateScreen = () => {
   const [location, setLocation] = useState('');
   const [date, setDate] = useState(new Date());
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = selectedDate => {
-    setDate(selectedDate);
-    hideDatePicker();
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
+    console.log(currentDate);
   };
 
   return (
@@ -42,15 +36,9 @@ const PostCreateScreen = () => {
             placeholder="위치를 입력하세요"
           />
           <View>
-            <Button onPress={showDatePicker} title="Show date picker!" />
-            <DateTimePickerModal
-              isVisible={isDatePickerVisible}
-              mode="date"
-              date={date}
-              onConfirm={handleConfirm}
-              onCancel={hideDatePicker}
-            />
+            <Button title="Show date picker!" />
           </View>
+          <View></View>
         </View>
       </ScrollView>
     </View>
