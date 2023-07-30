@@ -28,8 +28,8 @@ const MainBottomContent = props => {
               return (
                 <TouchableOpacity
                   key={imgIndex}
-                  onPressIn={() => props.data(imageData)}
-                  onPressOut={() => props.data(null)}
+                  // onPressIn={() => props.data(imageData)}
+                  // onPressOut={() => props.data(null)}
                   style={{paddingBottom: 2, width: '33%'}}>
                   <Image source={imageData} style={styles.image} />
                 </TouchableOpacity>

@@ -5,7 +5,7 @@ import HomeScreen from '../../screens/HomeScreen';
 function HomeTab({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Home',
+      title: 'EMOJIPOT',
     });
   });
   return (

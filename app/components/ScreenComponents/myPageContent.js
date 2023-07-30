@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 
-const MainTopContent = props => {
+const MyPageContent = props => {
   const searchData = [
     {
       id: 0,
@@ -28,8 +28,9 @@ const MainTopContent = props => {
               return (
                 <TouchableOpacity
                   key={imgIndex}
-                  // onPressIn={() => props.data(imageData)}
-                  // onPressOut={() => props.data(null)}
+                  // 여긴 다시 생각해보기!!
+                  //   onPressIn={() => props.data(imageData)}
+                  //   onPressOut={() => props.data(null)}
                   style={{paddingBottom: 2, width: '33%'}}>
                   <Image source={imageData} style={styles.image} />
                 </TouchableOpacity>
@@ -48,8 +49,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 150,
   },
 });
 
-export default MainTopContent;
+export default MyPageContent;
