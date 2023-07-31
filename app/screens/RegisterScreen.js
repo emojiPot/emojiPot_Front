@@ -26,20 +26,40 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.formArea}>
-        <TextInput style={styles.idForm} placeholder={'아이디'} />
-        <TextInput style={styles.pwForm} placeholder={'비밀번호'} />
-        <TextInput style={styles.pwForm} placeholder={'비밀번호확인'} />
-        <TextInput style={styles.idForm} placeholder={'이메일'} />
+        <TextInput style={styles.inputField} placeholder={'아이디'} />
+        <TextInput style={styles.inputField} placeholder={'비밀번호'} />
+        <TextInput style={styles.inputField} placeholder={'비밀번호확인'} />
+        <TextInput style={styles.inputField} placeholder={'이메일'} />
+      </View>
+
+      {/* 소셜로그인 따로 .js파일 만들어서 해야하나..? */}
+      {/* 카카로 소셜 로그인으로 바꾸기 */}
+      <View style={{flex: 0.75}}>
+        <View style={styles.btnArea}>
+          <TouchableOpacity style={styles.kakaoBtn}>
+            <Text style={(styles.Text, {color: 'black'})}>카카오회원가입</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* 구글 소셩 로그인으로 바꾸기 */}
+      <View style={{flex: 0.75}}>
+        <View style={styles.btnArea}>
+          <TouchableOpacity style={styles.googleBtn}>
+            <Text style={(styles.Text, {color: 'black'})}>구글회원가입</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={{flex: 0.75}}>
         <View style={styles.btnArea}>
           <TouchableOpacity style={styles.btn}>
-            <Text style={(styles.Text, {color: 'white'})}>로그인</Text>
+            <Text style={(styles.Text, {color: 'white'})}>회원가입</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{flex: 3}} />
+
+      <View style={{flex: 2}} />
     </View>
   );
 };
@@ -81,28 +101,15 @@ const styles = StyleSheet.create({
     flex: 3,
   },
 
-  idForm: {
+  inputField: {
     borderWidth: 2,
-    borderBottomWidth: 1,
     borderColor: 'black',
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
+    borderRadius: 7,
     width: '100%',
     height: hp(6),
     paddingLeft: 10,
     paddingRight: 10,
-  },
-
-  pwForm: {
-    borderWidth: 2,
-    borderTopWidth: 1,
-    borderColor: 'black',
-    borderBottomRightRadius: 7,
-    borderBottomLeftRadius: 7,
-    width: '100%',
-    height: hp(6),
-    paddingLeft: 10,
-    paddingRight: 10,
+    marginBottom: wp(2),
   },
 
   btnArea: {
@@ -119,6 +126,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'black',
+  },
+  kakaoBtn: {
+    flex: 1,
+    width: '100%',
+    borderRadius: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFE034',
+  },
+  googleBtn: {
+    flex: 1,
+    width: '100%',
+    borderRadius: 7,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
 });
 

@@ -14,7 +14,7 @@ import PostScreen from './components/AppTabNavigator/PostTab';
 import LikesScreen from './components/AppTabNavigator/LikesTab';
 import MypageScreen from './components/AppTabNavigator/MypageTab';
 
-//const Stack = createStackNavigator();
+// const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 // function BackBtn() {

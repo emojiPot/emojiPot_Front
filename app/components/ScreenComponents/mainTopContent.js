@@ -2,6 +2,7 @@ import React from 'react';
 import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 
 const MainTopContent = props => {
+  // 임시 데이터
   const searchData = [
     {
       id: 0,

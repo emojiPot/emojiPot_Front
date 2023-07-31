@@ -16,30 +16,18 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
+// flatList는 저장된 데이터를 받아오는 거기 때문에..사용X
 const PostCreateScreen = () => {
-  const [location, setLocation] = useState('');
-  const [date, setDate] = useState(new Date());
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setDate(currentDate);
-    console.log(currentDate);
-  };
-
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={styles.contentArea}>
-          <TextInput
-            value={location}
-            onChangeText={setLocation}
-            placeholder="위치를 입력하세요"
-          />
-          <View>
-            <Button title="Show date picker!" />
-          </View>
-          <View></View>
-        </View>
+        <Text>위치저장</Text>
+        <Text>날짜입력</Text>
+        <Text>사진업로드(5장)</Text>
+        <Text>3가지 감정이모지 박스</Text>
+        <Text>글작성박스</Text>
+        <Text>공개/비공개 설정 체크박스</Text>
+        <Text>여행업로드 박스</Text>
       </ScrollView>
     </View>
   );
@@ -47,14 +35,12 @@ const PostCreateScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1, //전체의 공간을 차지한다는 의미
     flexDirection: 'column',
     backgroundColor: 'white',
-  },
-  contentArea: {
-    flex: 1,
-    paddingTop: wp(5),
-    paddingLeft: wp(5),
+    paddingLeft: wp(7),
+    paddingRight: wp(7),
+    paddingTop: hp(3),
   },
 });
 

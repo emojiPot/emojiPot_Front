@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TextInput, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import 'react-native-gesture-handler';
 import SearchBox from '../components/ScreenComponents/searchBox';
 import MainTopContent from '../components/ScreenComponents/mainTopContent';
