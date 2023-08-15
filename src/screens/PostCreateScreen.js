@@ -12,8 +12,7 @@ import {
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import DateTimePicker from '@react-native-community/datetimepicker';
-// 이미지 받아오기
-// import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import {
   widthPercentageToDP as wp,
@@ -57,8 +56,17 @@ const PostCreateScreen = () => {
   //사진 받아오기
   const [selectedPhotos, setSelectedPhotos] = useState([]);
 
-  const handlePhotoUpload = () => {
-    // Implement your logic to handle photo uploads here
+  const handlePhotoUpload = async () => {
+    try {
+      const images = await ImagePicker.openPicker({
+        multiple: true,
+        maxFiles: 5,
+        mediaType: 'photo',
+      });
+      setSelectedPhotos(images);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //이모지
@@ -104,6 +112,9 @@ const PostCreateScreen = () => {
         </View>
         <View style={styles.component}>
           <Text>사진업로드(5장)</Text>
+          <TouchableOpacity onPress={handlePhotoUpload}>
+            <Text>사진을 선택하세요</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.component}>
           <Text>3가지 감정이모지 박스</Text>
