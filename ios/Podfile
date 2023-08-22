@@ -5,7 +5,8 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+
+platform :ios, '13.0'
 prepare_react_native_project!
 
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
@@ -26,6 +27,14 @@ if linkage != nil
 end
 
 target 'FE' do
+  rn_maps_path = '../node_modules/react-native-maps'
+  # pod 'react-native-google-maps', :path => rn_maps_path
+  pod 'GoogleMaps'
+  # pod 'Google-Maps-iOS-Utils'
+
+  pod 'AFNetworking', '~> 2.6'
+  pod 'ORStackView', '~> 3.0'
+  pod 'SwiftyJSON', '~> 2.3'
   config = use_native_modules!
 
   # Flags change depending on the env values.
@@ -44,10 +53,8 @@ target 'FE' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
-
   target 'FETests' do
     inherit! :complete
-    # Pods for testing
   end
 
   post_install do |installer|

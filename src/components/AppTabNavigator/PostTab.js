@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import PostCreateScreen from '../../screens/PostCreateScreen';
+// import DetailScreen from '../../screens/DetailScreen';
 
 function BackBtn({navigation}) {
   return (

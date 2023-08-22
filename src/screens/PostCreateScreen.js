@@ -6,13 +6,14 @@ import {
   Button,
   Image,
   TouchableOpacity,
-  CheckBox,
   StyleSheet,
   ScrollView,
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
+import MapView from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ImagePicker from 'react-native-image-crop-picker';
+import CheckBox from '@react-native-community/checkbox';
 
 import {
   widthPercentageToDP as wp,
@@ -23,24 +24,26 @@ import {
 const PostCreateScreen = () => {
   // 위치 받아오기
   const [location, setLocation] = useState('');
-
-  const handleLocationChange = text => {
-    setLocation(text);
-  };
+  const [selectedPosition, setSelectedPosition] = useState('');
 
   useEffect(() => {
     // 위치 정보 받아오기
     Geolocation.getCurrentPosition(
       position => {
         const {latitude, longitude} = position.coords;
-        setLocation(`Latitude: ${latitude}, Longitude: ${longitude}`);
+        setLocation({latitude, longitude});
       },
       error => {
         console.error(error);
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
-  }, []); // useEffect를 사용하여 컴포넌트가 마운트될 때 위치 정보를 받아옴
+  }, []);
+
+  const handleMapPress = event => {
+    const {latitude, longitude} = event.nativeEvent.coordinate;
+    setSelectedPosition({latitude, longitude});
+  };
 
   // 날짜 받아오기
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -83,18 +86,42 @@ const PostCreateScreen = () => {
     setPostText(text);
   };
 
+  //공개,비공개 선택
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckBoxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.component}>
           <Text>위치저장</Text>
-          {/* 근데 위치 받는거 텍스트로 입력받아두 되는걸까..? 따로 기능이 있는 걸까? */}
-          <TextInput
-            placeholder="위치를 입력해주세요!"
-            value={location}
-            onChangeText={handleLocationChange}
-            style={styles.locationInput}
-          />
+          {/* 구글맵 API 받아오는거 문제있음 */}
+          {/* <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: location?.latitude || 37.78825,
+              longitude: location?.longitude || -122.4324,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            onPress={handleMapPress}>
+            {selectedPosition && (
+              <Marker
+                coordinate={selectedPosition}
+                title="Selected Location"
+                description="Your selected location"
+              />
+            )}
+          </MapView> */}
+          <Text>
+            Selected Location:{' '}
+            {selectedPosition
+              ? `${selectedPosition.latitude}, ${selectedPosition.longitude}`
+              : 'None'}
+          </Text>
         </View>
         <View style={styles.component}>
           <Text>날짜입력</Text>
@@ -156,12 +183,16 @@ const PostCreateScreen = () => {
             style={styles.postTextInput}
           />
         </View>
-        <View style={styles.component}>
-          <Text>공개/비공개</Text>
-          {/* <CheckBox></CheckBox> */}
-        </View>
       </ScrollView>
       <View style={styles.component}>
+        <View style={styles.checkBoxContainer}>
+          <Text style={{fontSize: 16}}>공개/비공개</Text>
+          <CheckBox
+            value={isChecked}
+            onValueChange={handleCheckBoxChange}
+            style={styles.checkBox}
+          />
+        </View>
         <TouchableOpacity style={styles.uploadBtn}>
           <Text style={styles.uploadBtnText}>여행기록 업로드</Text>
         </TouchableOpacity>
@@ -175,36 +206,17 @@ const styles = StyleSheet.create({
     flex: 1, //전체의 공간을 차지한다는 의미
     flexDirection: 'column',
     backgroundColor: 'white',
-    paddingLeft: wp(7),
-    paddingRight: wp(7),
+    paddingHorizontal: wp(7),
     paddingTop: hp(3),
   },
   component: {
     paddingBottom: hp(2),
   },
-  // 버튼스타일
-  uploadBtn: {
-    backgroundColor: '#C4C1CC',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  uploadBtnText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  locationInput: {},
-  postTextInput: {
-    height: 150,
-    borderColor: '#C4C1CC',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 5,
-  },
+  // locationInput: {},
+  // map: {
+  //   width: '100%',
+  //   height: 300,
+  // },
   emotionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -226,6 +238,34 @@ const styles = StyleSheet.create({
   },
   selectedEmotion: {
     backgroundColor: '#FFD700', // 선택된 이모지의 배경색 변경
+  },
+  postTextInput: {
+    height: 150,
+    borderColor: '#C4C1CC',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 5,
+  },
+  checkBoxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+  },
+  // 버튼스타일
+  uploadBtn: {
+    backgroundColor: '#C4C1CC',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  uploadBtnText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

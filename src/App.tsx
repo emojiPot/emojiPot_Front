@@ -1,9 +1,9 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
-import {StyleSheet, View, Text, Image, Button, Linking} from 'react-native';
+// import {StyleSheet, View, Text, Image, Button, Linking} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+// import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import {enableScreens} from 'react-native-screens';
