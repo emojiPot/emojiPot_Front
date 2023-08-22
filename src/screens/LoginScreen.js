@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,31 +21,37 @@ import {
 
 import axios from 'axios';
 
-function LogoutScreen({navigation: {navigate}}) {  
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+function LogoutScreen({navigation: {navigate}}) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   function login() {
-    if(email.trim() == "") {
-      Alert.alert("이메일 입력 확인", "이메일이 입력되지 않았습니다.");
-    } else if(password.trim() == "") {
-      Alert.alert("비밀번호 입력 확인", "비밀번호가 입력되지 않았습니다.");
+    if (email.trim() == '') {
+      Alert.alert('이메일 입력 확인', '이메일이 입력되지 않았습니다.');
+    } else if (password.trim() == '') {
+      Alert.alert('비밀번호 입력 확인', '비밀번호가 입력되지 않았습니다.');
     } else {
-      axios.post("http://localhost:8080/v1/users/login",  
-        {
-          email: email,
-          password: password
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }).then(function(resp) {
+      axios
+        .post(
+          'http://localhost:8080/v1/users/login',
+          {
+            email: email,
+            password: password,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .then(function (resp) {
           console.log(resp.data.result.token);
           AsyncStorage.setItem('token', resp.data.result.token);
           // 메인화면으로 이동 코드 필요
-        }).catch(error => {
+        })
+        .catch(error => {
           console.error('API 요청 에러:', error);
-        }) 
+        });
     }
   }
 
@@ -61,28 +67,25 @@ function LogoutScreen({navigation: {navigate}}) {
       </View>
 
       <View style={styles.formArea}>
-        <TextInput 
-          style={styles.idForm} 
+        <TextInput
+          style={styles.idForm}
           placeholder={'이메일'}
           placeholderTextColor="#003f5c"
-          onChangeText={(email) => setEmail(email)} 
+          onChangeText={email => setEmail(email)}
           value={email}
-          />
-        <TextInput 
-          style={styles.pwForm} 
+        />
+        <TextInput
+          style={styles.pwForm}
           placeholder={'비밀번호'}
           placeholderTextColor="#003f5c"
-          onChangeText={(password) => setPassword(password)}
+          onChangeText={password => setPassword(password)}
           value={password}
-          />
+        />
       </View>
 
       <View style={{flex: 0.75}}>
         <View style={styles.btnArea}>
-          <TouchableOpacity 
-            style={styles.btn}
-            onPress={()=>login()}
-          >
+          <TouchableOpacity style={styles.btn} onPress={() => login()}>
             <Text style={(styles.Text, {color: 'white'})}>로그인</Text>
           </TouchableOpacity>
         </View>

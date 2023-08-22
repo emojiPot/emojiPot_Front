@@ -21,9 +21,9 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import axios from 'axios';
+// import axios from 'axios';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 여기서 const 로직들 다시 원하는 방향으로 바꾸기
 const PostCreateScreen = () => {
@@ -100,41 +100,41 @@ const PostCreateScreen = () => {
 
   const [token, setToken] = useState('');
 
-  const getToken = async () => {
-    try {
-      setToken(await AsyncStorage.getItem('token'));
-      if (token == null) { console.log('Token not found');}
-    } catch (error) {
-      console.error('Error retrieving token:', error);
-    }
-  };
+  // const getToken = async () => {
+  //   try {
+  //     setToken(await AsyncStorage.getItem('token'));
+  //     if (token == null) { console.log('Token not found');}
+  //   } catch (error) {
+  //     console.error('Error retrieving token:', error);
+  //   }
+  // };
 
-  function uploadPost() {
-    getToken();
-    
-    if(location.trim() == "") {
-      Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
-    } else if(postText.trim() == "") {
-      Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
-    } else {
-      axios.post("http://localhost:8080/v1/posts",  
-        {
-          location: location,
-          emotion: selectedEmotion,
-          record: postText,
-          is_opened : 1
-        }, {
-          headers: {
-            'Authorization' : `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }).then(function(resp) {
-          console.error('게시글 등록 성공!', error);
-        }).catch(error => {
-          console.error('API 요청 에러:', error);
-        }) 
-    }
-  }
+  // function uploadPost() {
+  //   getToken();
+
+  //   if(location.trim() == "") {
+  //     Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
+  //   } else if(postText.trim() == "") {
+  //     Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
+  //   } else {
+  //     axios.post("http://localhost:8080/v1/posts",
+  //       {
+  //         location: location,
+  //         emotion: selectedEmotion,
+  //         record: postText,
+  //         is_opened : 1
+  //       }, {
+  //         headers: {
+  //           'Authorization' : `Bearer ${token}`,
+  //           'Content-Type': 'application/json'
+  //         }
+  //       }).then(function(resp) {
+  //         console.error('게시글 등록 성공!', error);
+  //       }).catch(error => {
+  //         console.error('API 요청 에러:', error);
+  //       })
+  //   }
+  // }
 
   return (
     <View style={styles.container}>

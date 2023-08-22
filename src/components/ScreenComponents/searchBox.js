@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, TextInput} from 'react-native';
-import Ionic from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const SearchBox = () => {
   return (
@@ -12,7 +12,7 @@ const SearchBox = () => {
         paddingVertical: 10,
         position: 'relative',
       }}>
-      <Ionic
+      <Icon
         name="search"
         style={{
           fontSize: 18,

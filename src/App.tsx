@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
 // import {StyleSheet, View, Text, Image, Button, Linking} from 'react-native';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import {NavigationContainer} from '@react-navigation/native';
 // import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -32,10 +32,42 @@ function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Post" component={PostScreen} />
-        <Tab.Screen name="Likes" component={LikesScreen} />
-        <Tab.Screen name="Mypage" component={MypageScreen} />
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <Icon name="home" size={30} color="black" />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Post"
+          component={PostScreen}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <Icon name="create" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Likes"
+          component={LikesScreen}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <Icon name="heart" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Mypage"
+          component={MypageScreen}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <Icon name="person" color={color} size={size} />
+            ),
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
 
