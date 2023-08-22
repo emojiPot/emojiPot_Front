@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import MapView from 'react-native-maps';
@@ -19,6 +20,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
+import axios from 'axios';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 여기서 const 로직들 다시 원하는 방향으로 바꾸기
 const PostCreateScreen = () => {
@@ -93,6 +98,44 @@ const PostCreateScreen = () => {
     setIsChecked(!isChecked);
   };
 
+  const [token, setToken] = useState('');
+
+  const getToken = async () => {
+    try {
+      setToken(await AsyncStorage.getItem('token'));
+      if (token == null) { console.log('Token not found');}
+    } catch (error) {
+      console.error('Error retrieving token:', error);
+    }
+  };
+
+  function uploadPost() {
+    getToken();
+    
+    if(location.trim() == "") {
+      Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
+    } else if(postText.trim() == "") {
+      Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
+    } else {
+      axios.post("http://localhost:8080/v1/posts",  
+        {
+          location: location,
+          emotion: selectedEmotion,
+          record: postText,
+          is_opened : 1
+        }, {
+          headers: {
+            'Authorization' : `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }).then(function(resp) {
+          console.error('게시글 등록 성공!', error);
+        }).catch(error => {
+          console.error('API 요청 에러:', error);
+        }) 
+    }
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -151,7 +194,7 @@ const PostCreateScreen = () => {
                 styles.emotionIcon,
                 selectedEmotion === 'happy' && styles.selectedEmotion,
               ]}
-              onPress={() => handleEmotionSelect('happy')}>
+              onPress={() => handleEmotionSelect(1)}>
               <Text>HAPPY</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -159,7 +202,7 @@ const PostCreateScreen = () => {
                 styles.emotionIcon,
                 selectedEmotion === 'sad' && styles.selectedEmotion,
               ]}
-              onPress={() => handleEmotionSelect('sad')}>
+              onPress={() => handleEmotionSelect(2)}>
               <Text>SAD</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -167,7 +210,7 @@ const PostCreateScreen = () => {
                 styles.emotionIcon,
                 selectedEmotion === 'angry' && styles.selectedEmotion,
               ]}
-              onPress={() => handleEmotionSelect('angry')}>
+              onPress={() => handleEmotionSelect(3)}>
               <Text>ANGRY</Text>
             </TouchableOpacity>
           </View>

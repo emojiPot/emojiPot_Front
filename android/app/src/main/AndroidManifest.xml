@@ -11,6 +11,10 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+       <!-- street view 사용 구글맵 키 입력-->
+      <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyBoXQ21DICycy-tnv4TKkX1w8hsSHqNKow"/> 
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
