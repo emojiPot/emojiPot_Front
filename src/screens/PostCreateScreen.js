@@ -101,7 +101,6 @@ const PostCreateScreen = () => {
 
   function uploadPost() {
     getToken();
-    
     if(location.trim() == "") {
       Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
     } else if(postText.trim() == "") {
@@ -115,11 +114,11 @@ const PostCreateScreen = () => {
           is_opened : 1
         }, {
           headers: {
-            'Authorization' : `Bearer ${token}`,
+            'Authorization' : 'Bearer ' + token,
             'Content-Type': 'application/json'
           }
         }).then(function(resp) {
-          console.error('게시글 등록 성공!', error);
+          console.log('게시글 등록 성공!');
         }).catch(error => {
           console.error('API 요청 에러:', error);
         }) 

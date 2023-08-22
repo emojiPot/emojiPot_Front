@@ -21,7 +21,7 @@ import {
 
 import axios from 'axios';
 
-function LogoutScreen({navigation: {navigate}}) {  
+function LogoutScreen({navigation}) {  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -43,6 +43,7 @@ function LogoutScreen({navigation: {navigate}}) {
           console.log(resp.data.result.token);
           AsyncStorage.setItem('token', resp.data.result.token);
           // 메인화면으로 이동 코드 필요
+          //navigation.navigate('Main');
         }).catch(error => {
           console.error('API 요청 에러:', error);
         }) 
@@ -74,6 +75,7 @@ function LogoutScreen({navigation: {navigate}}) {
           placeholderTextColor="#003f5c"
           onChangeText={(password) => setPassword(password)}
           value={password}
+          secureTextEntry={true}
           />
       </View>
 
@@ -139,6 +141,7 @@ const styles = StyleSheet.create({
     height: hp(6),
     paddingLeft: 10,
     paddingRight: 10,
+    color: 'black',
   },
 
   pwForm: {
@@ -151,6 +154,7 @@ const styles = StyleSheet.create({
     height: hp(6),
     paddingLeft: 10,
     paddingRight: 10,
+    color: 'black',
   },
 
   btnArea: {
