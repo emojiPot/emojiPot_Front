@@ -16,6 +16,8 @@ import HomeScreen from './components/AppTabNavigator/HomeTab';
 import PostScreen from './components/AppTabNavigator/PostTab';
 import LikesScreen from './components/AppTabNavigator/LikesTab';
 import MypageScreen from './components/AppTabNavigator/MypageTab';
+import DetailPostScreen from './screens/DetailScreen';
+import UpdatePostScreen from './screens/UpdateScreen';
 
 // const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -33,7 +35,7 @@ function App() {
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Post" component={PostScreen} />
+        <Tab.Screen name="Post" component={UpdatePostScreen} />
         <Tab.Screen name="Likes" component={LikesScreen} />
         <Tab.Screen name="Mypage" component={MypageScreen} />
       </Tab.Navigator>

@@ -11,8 +11,6 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import Geolocation from '@react-native-community/geolocation';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import ImagePicker from 'react-native-image-crop-picker';
 
 import {
@@ -25,42 +23,25 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-// 여기서 const 로직들 다시 원하는 방향으로 바꾸기
-const PostCreateScreen = () => {
-  // 위치 받아오기
+
+const UpdateScreen = ({route}) => {
+  //const {postId} = route.params.postId;
   const [location, setLocation] = useState('');
-
-  const handleLocationChange = text => {
-    setLocation(text);
-  };
-
-  useEffect(() => {
-    // 위치 정보 받아오기
-    Geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        setLocation(`Latitude: ${latitude}, Longitude: ${longitude}`);
-      },
-      error => {
-        console.error(error);
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-  }, []); // useEffect를 사용하여 컴포넌트가 마운트될 때 위치 정보를 받아옴
-
-  // 날짜 받아오기
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const handleDateChange = (event, selected) => {
-    if (selected) {
-      setSelectedDate(selected);
-    }
-    setShowDatePicker(false);
-  };
-
-  //사진 받아오기
   const [selectedPhotos, setSelectedPhotos] = useState([]);
+  const [selectedEmotion, setSelectedEmotion] = useState(null);
+  const [record, setRecord] = useState('');
+  const [token, setToken] = useState('');
+
+  // 게시글 상세 조회 서버에서 아직 구현 미완료
+  //useEffect(() => {
+  //  axios.get('http://localhost:8080/v1/posts/'+{postId})
+  //      .then((res) => {
+  //         
+  //      })
+  //      .catch((err)=>{
+  //          console.log(err)
+  //      })
+  //}, [])
 
   const handlePhotoUpload = async () => {
     try {
@@ -75,21 +56,13 @@ const PostCreateScreen = () => {
     }
   };
 
-  //이모지
-  const [selectedEmotion, setSelectedEmotion] = useState(null);
-
   const handleEmotionSelect = emotion => {
     setSelectedEmotion(emotion);
   };
 
-  //글 작성
-  const [postText, setPostText] = useState('');
-
   const handlePostTextChange = text => {
-    setPostText(text);
+    setRecord(text);
   };
-
-  const [token, setToken] = useState('');
 
   const getToken = async () => {
     try {
@@ -100,37 +73,36 @@ const PostCreateScreen = () => {
     }
   };
 
-  function uploadPost() {
-    getToken();
-    if(location.trim() == "") {
-      Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
-    } else if(postText.trim() == "") {
-      Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
-    } else {
-      axios.post("http://localhost:8080/v1/posts",  
-        {
-          location: location,
-          emotion: selectedEmotion,
-          record: postText,
-          is_opened : 1
-        }, {
-          headers: {
-            'Authorization' : 'Bearer ' + token,
-            'Content-Type': 'application/json'
-          }
-        }).then(function(resp) {
-          console.log('게시글 등록 성공!');
-        }).catch(error => {
-          console.error('API 요청 에러:', error);
-        }) 
-    }
-  }
+//   function uploadPost() {
+//     getToken();
+//     if(location.trim() == "") {
+//       Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
+//     } else if(postText.trim() == "") {
+//       Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
+//     } else {
+//       axios.post("http://localhost:8080/v1/posts",  
+//         {
+//           location: location,
+//           emotion: selectedEmotion,
+//           record: postText,
+//           is_opened : 1
+//         }, {
+//           headers: {
+//             'Authorization' : 'Bearer ' + token,
+//             'Content-Type': 'application/json'
+//           }
+//         }).then(function(resp) {
+//           console.log('게시글 수정 성공!');
+//         }).catch(error => {
+//           console.error('API 요청 에러:', error);
+//         }) 
+//     }
+//   }
 
   return (
     <View style={styles.container}>
       <View style={styles.component}>
-        {/* 검색 결과 출력 안돼서 수정 필요 */}
-          <Text>위치 검색</Text> 
+          <Text>위치 검색</Text>
           <GooglePlacesAutocomplete
             minLength={2}
             placeholder="SEARCH"
@@ -150,20 +122,6 @@ const PostCreateScreen = () => {
           />
       </View>
       <ScrollView style={styles.scrollComponent}>
-        <View style={styles.component}>
-          <Text>날짜입력</Text>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-            <Text>{selectedDate.toLocaleDateString()}</Text>
-          </TouchableOpacity>
-          {showDatePicker && (
-            <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display="calendar"
-              onChange={handleDateChange}
-            />
-          )}
-        </View>
         <View style={styles.component}>
           <Text>사진업로드(5장)</Text>
           <TouchableOpacity onPress={handlePhotoUpload}>
@@ -200,11 +158,11 @@ const PostCreateScreen = () => {
           </View>
         </View>
         <View style={styles.component}>
-          <Text>글작성({postText.length}/1000)</Text>
+          <Text>글작성({record.length}/1000)</Text>
           <TextInput
             multiline
             placeholder="여기에 글을 작성해주세요!"
-            value={postText}
+            value={record}
             onChangeText={handlePostTextChange}
             maxLength={1000}
             style={styles.postTextInput}
@@ -219,7 +177,7 @@ const PostCreateScreen = () => {
         <TouchableOpacity 
           style={styles.uploadBtn}  
           onPress={()=>uploadPost()}>
-          <Text style={styles.uploadBtnText}>여행기록 업로드</Text>
+          <Text style={styles.uploadBtnText}>게시글 수정</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -332,4 +290,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostCreateScreen;
+export default UpdateScreen;
