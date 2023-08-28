@@ -7,10 +7,13 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
+import CommentScreen from './CommentScreen';
 
 const DetailScreen = () => {
   // route.params 에서 전달된 데이터를 가져올 수 있습니다.
@@ -21,6 +24,12 @@ const DetailScreen = () => {
 
   const handleLikePress = () => {
     setLiked(!liked);
+  };
+
+  const [showCommentScreen, setShowCommentScreen] = useState(false);
+
+  const handleCommentPress = () => {
+    setShowCommentScreen(true); // CommentScreen 컴포넌트를 렌더링할지 결정
   };
 
   return (
@@ -49,13 +58,27 @@ const DetailScreen = () => {
         />
         <View style={styles.postInfo}>
           {/* 이거 하트 아이콘으로 바꾸기 */}
-          <TouchableOpacity onPress={handleLikePress} style={styles.likeButton}>
-            <Text style={styles.likeText}>{liked ? 'Unlike' : 'Like'}</Text>
-          </TouchableOpacity>
+          <View style={styles.iconsContainer}>
+            <TouchableOpacity onPress={handleLikePress}>
+              <Icon
+                name={liked ? 'heart' : 'heart-outline'}
+                size={30}
+                color="#C4C1CC"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCommentPress}>
+              <Icon
+                name="chatbubble-ellipses-outline"
+                size={30}
+                color="#C4C1CC"
+              />
+            </TouchableOpacity>
+          </View>
+
           <Text>위치정보가져와야지</Text>
           <Text>해당 post의 글 가져와야지</Text>
-          <Text>댓글도 보여야되구나</Text>
         </View>
+        {showCommentScreen && <CommentScreen />}
       </View>
     </ScrollView>
   );
@@ -131,6 +154,10 @@ const styles = StyleSheet.create({
   },
   likeText: {
     fontWeight: 'bold',
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    paddingVertical: 5,
   },
 });
 

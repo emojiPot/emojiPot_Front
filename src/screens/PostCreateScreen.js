@@ -11,7 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import MapView from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ImagePicker from 'react-native-image-crop-picker';
 import CheckBox from '@react-native-community/checkbox';
@@ -28,27 +28,29 @@ import {
 // 여기서 const 로직들 다시 원하는 방향으로 바꾸기
 const PostCreateScreen = () => {
   // 위치 받아오기
-  const [location, setLocation] = useState('');
-  const [selectedPosition, setSelectedPosition] = useState('');
+  // const [selectedPosition, setSelectedPosition] = useState(null);
+  // const [showMap, setShowMap] = useState(false);
 
-  useEffect(() => {
-    // 위치 정보 받아오기
-    Geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        setLocation({latitude, longitude});
-      },
-      error => {
-        console.error(error);
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-  }, []);
+  // const handleMapClick = event => {
+  //   const clickedPosition = event.nativeEvent.coordinate;
+  //   setSelectedPosition(clickedPosition);
+  // };
 
-  const handleMapPress = event => {
-    const {latitude, longitude} = event.nativeEvent.coordinate;
-    setSelectedPosition({latitude, longitude});
-  };
+  // const handleLocationSave = () => {
+  //   setShowMap(!showMap);
+  //   if (selectedPosition) {
+  //     // 여기에 클릭한 위치를 저장하는 로직을 추가합니다.
+  //     // 예를 들어, 서버에 위치 정보를 전송하거나 로컬 상태에 저장할 수 있습니다.
+  //     console.log('Saved position:', selectedPosition);
+  //   }
+  // };
+
+  const [initialRegion, setInitialRegion] = useState({
+    latitude: 35.91395373474155,
+    longitude: 127.73829440215488,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  });
 
   // 날짜 받아오기
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -141,30 +143,13 @@ const PostCreateScreen = () => {
       <ScrollView>
         <View style={styles.component}>
           <Text>위치저장</Text>
-          {/* 구글맵 API 받아오는거 문제있음 */}
-          {/* <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: location?.latitude || 37.78825,
-              longitude: location?.longitude || -122.4324,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-            onPress={handleMapPress}>
-            {selectedPosition && (
-              <Marker
-                coordinate={selectedPosition}
-                title="Selected Location"
-                description="Your selected location"
-              />
-            )}
-          </MapView> */}
-          <Text>
-            Selected Location:{' '}
-            {selectedPosition
-              ? `${selectedPosition.latitude}, ${selectedPosition.longitude}`
-              : 'None'}
-          </Text>
+          <MapView
+            initialRegion={initialRegion}
+            style={[styles.map]}
+            provider={PROVIDER_GOOGLE}
+            showsUserLocation={true}
+            showsMyLocationButton={true}
+          />
         </View>
         <View style={styles.component}>
           <Text>날짜입력</Text>
@@ -256,10 +241,11 @@ const styles = StyleSheet.create({
     paddingBottom: hp(2),
   },
   // locationInput: {},
-  // map: {
-  //   width: '100%',
-  //   height: 300,
-  // },
+  map: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   emotionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

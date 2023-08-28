@@ -3,11 +3,6 @@ import {View, ScrollView, StyleSheet} from 'react-native';
 import HomeScreen from '../../screens/HomeScreen';
 
 function HomeTab({navigation}) {
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: 'EMOJIPOT',
-    });
-  });
   return (
     <View style={styles.container}>
       <HomeScreen />

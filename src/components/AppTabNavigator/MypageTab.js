@@ -6,7 +6,7 @@ import MypageScreen from '../../screens/MypageScreen';
 function MypageTab({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Mypage',
+      // title: 'Mypage',
     });
   });
   return (
