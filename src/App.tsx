@@ -16,6 +16,8 @@ import HomeScreen from './components/AppTabNavigator/HomeTab';
 import PostScreen from './components/AppTabNavigator/PostTab';
 import LikesScreen from './components/AppTabNavigator/LikesTab';
 import MypageScreen from './components/AppTabNavigator/MypageTab';
+import DetailPostScreen from './screens/DetailScreen';
+import UpdatePostScreen from './screens/UpdateScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,6 +39,7 @@ function App() {
       {/* 서버 연결이 되어야 할 수 있을 것 같음 */}
       {/* {isLoggedIn ? ( */}
       <Tab.Navigator>
+
         <Tab.Screen
           name="Home"
           component={HomeScreen}

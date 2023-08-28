@@ -1,4 +1,6 @@
-import React, {useState} from 'react';
+
+import React, {useState, useEffect} from 'react';
+
 import {
   View,
   Text,
@@ -6,12 +8,15 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
 
 import CommentScreen from './CommentScreen';
 
@@ -22,9 +27,31 @@ const DetailScreen = () => {
   // 좋아요 상태와 이를 변경하는 함수를 생성합니다
   const [liked, setLiked] = useState(false);
 
+import axios from 'axios';
+
+const DetailScreen = ({route}) => {
+  //const {postId} = route.params.postId;
+  const {postId} = 1;
+  const [liked, setLiked] = useState(false);
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [record, setRecord] = useState("");
+
+  // 게시글 상세 조회 서버에서 아직 구현 미완료
+  //useEffect(() => {
+  //  axios.get('http://localhost:8080/v1/posts/'+{postId})
+  //      .then((res) => {
+  //         
+  //      })
+  //      .catch((err)=>{
+  //          console.log(err)
+  //      })
+  //}, [])
+
   const handleLikePress = () => {
     setLiked(!liked);
   };
+
 
   const [showCommentScreen, setShowCommentScreen] = useState(false);
 
@@ -32,27 +59,44 @@ const DetailScreen = () => {
     setShowCommentScreen(true); // CommentScreen 컴포넌트를 렌더링할지 결정
   };
 
+  function deletePost() {
+    axios.delete('http://localhost:8080/v1/posts/'+{postId})
+    .then((res) => {
+        Alert.alert("게시글 삭제 완료", "게시글이 성공적으로 삭제되었습니다.");
+        // 게시글 목록 화면으로 이동
+    })
+    .catch((err)=>{
+        console.log(err)
+    })
+  }
+
+  function updatePost() {
+    //게시글 수정 페이지로 이동
+    //navigation.navigate('');
+  }
+
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.posts}>
         {/* 프로필, 팔로우, 스크랩 버튼 한 묶음 */}
         <View style={styles.postHeader}>
           <Image
-            source={require('../assest/images/post2.jpg')} // 프로필 사진 경로
+            source={require('../assest/images/post2.jpg')} // 프로필 사진 경로 
             style={styles.profileImage}
             resizeMode="cover"
           />
           <View style={styles.buttonsContainer}>
             <TouchableOpacity style={styles.followButton}>
-              <Text style={styles.followButtonText}>Follow</Text>
+              <Text style={styles.buttonText}>Follow</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.scrapButton}>
-              <Text style={styles.scrapButtonText}>Scrap</Text>
+              <Text style={styles.buttonText}>Scrap</Text>
             </TouchableOpacity>
           </View>
         </View>
         <Image
-          source={require('../assest/images/post1.jpg')} // 이미지 경로
+          source={require('../assest/images/post1.jpg')} // DB에서 이미지 가져와서 출력
           style={styles.image}
           resizeMode="cover"
         />
@@ -79,6 +123,22 @@ const DetailScreen = () => {
           <Text>해당 post의 글 가져와야지</Text>
         </View>
         {showCommentScreen && <CommentScreen />}
+          {/* 좋아요 클릭 DB로 전송 */}
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={handleLikePress} style={styles.likeButton}> 
+                <Text>{liked ? '🖤' : '❤'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.updateButton} onPress={()=>updatePost()}> 
+                <Text style={styles.buttonText}>Update</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={()=>deletePost()}> 
+             <Text style={styles.buttonText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+          <Text>{location}</Text>
+          <Text>{record}</Text>
+          <Text>댓글도 보여야되구나</Text>
+        </View>
       </View>
     </ScrollView>
   );
@@ -117,7 +177,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
   },
-  followButtonText: {
+  buttonText: {
     color: 'white',
     fontWeight: 'bold',
   },
@@ -127,9 +187,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
   },
+
   scrapButtonText: {
     color: 'white',
     fontWeight: 'bold',
+
+  updateButton: {
+    backgroundColor: '#99CCFF',
+    marginTop: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginRight: 5,
+    marginLeft: 5,
+  },
+  deleteButton: {
+    backgroundColor: '#F5A6A1',
+    marginTop: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+
   },
   image: {
     width: 'auto',
@@ -147,7 +225,9 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     marginTop: 10,
+
     backgroundColor: '#C4C1CC',
+
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
@@ -161,4 +241,6 @@ const styles = StyleSheet.create({
   },
 });
 
+
 export default DetailScreen;
+

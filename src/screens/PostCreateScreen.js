@@ -25,6 +25,7 @@ import {
 
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 // 여기서 const 로직들 다시 원하는 방향으로 바꾸기
 const PostCreateScreen = () => {
   // 위치 받아오기
@@ -137,20 +138,56 @@ const PostCreateScreen = () => {
   //       })
   //   }
   // }
+  function uploadPost() {
+    getToken();
+    if(location.trim() == "") {
+      Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
+    } else if(postText.trim() == "") {
+      Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
+    } else {
+      axios.post("http://localhost:8080/v1/posts",  
+        {
+          location: location,
+          emotion: selectedEmotion,
+          record: postText,
+          is_opened : 1
+        }, {
+          headers: {
+            'Authorization' : 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          }
+        }).then(function(resp) {
+          console.log('게시글 등록 성공!');
+        }).catch(error => {
+          console.error('API 요청 에러:', error);
+        }) 
+    }
+  }
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.component}>
-          <Text>위치저장</Text>
-          <MapView
-            initialRegion={initialRegion}
-            style={[styles.map]}
-            provider={PROVIDER_GOOGLE}
-            showsUserLocation={true}
-            showsMyLocationButton={true}
+      <View style={styles.component}>
+        {/* 검색 결과 출력 안돼서 수정 필요 */}
+          <Text>위치 검색</Text> 
+          <GooglePlacesAutocomplete
+            minLength={2}
+            placeholder="SEARCH"
+            query={{
+              key: '',
+              language: "ko",
+              components: "country:kr",
+            }}
+            keyboardShouldPersistTaps={"handled"}
+            fetchDetails={true}
+            onPress={(data, details) => {console.log(data, details);}}
+            onFail={(error) => console.log(error)}
+            onNotFound={() => console.log("no results")}
+            keepResultsAfterBlur={true}
+            enablePoweredByContainer={false}
+            styles={styles.search}
           />
-        </View>
+      </View>
+      <ScrollView style={styles.scrollComponent}>
         <View style={styles.component}>
           <Text>날짜입력</Text>
           <TouchableOpacity onPress={() => setShowDatePicker(true)}>
@@ -230,12 +267,59 @@ const PostCreateScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  search: {
+    // container 감싸고 있는 컴포넌트
+    container: {},
+    // input을 감싸는 컴포넌트
+    textInputContainer: {
+      flexDirection: "row",
+    },
+    // input창
+    textInput: {
+      backgroundColor: "#c8c7cc",
+      borderRadius: 8,
+      paddingVertical: 9,
+      paddingHorizontal: 12,
+      fontSize: 16,
+      color: "#6c6c6e",
+    },
+    // 검색결과 리스트 컴포넌트
+    listView: {
+      backgroundColor: "#c8c7cc",
+      borderRadius: 10,
+      paddingHorizontal: 10,
+      elevation: 8,
+      shadowColor: "#6164BB",
+    },
+    // 검색결과 행
+    row: {
+       paddingVertical: 20,
+    },
+    // 검색결과 divided line
+    separator: {
+      height: 2,
+      backgroundColor: "#c8c7cc",
+    },
+    // 검색결과 text
+    description: {
+      fontSize: 15,
+    },
+    // 필요없음
+    loader: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      height: 20,
+    },
+  },
   container: {
     flex: 1, //전체의 공간을 차지한다는 의미
     flexDirection: 'column',
     backgroundColor: 'white',
     paddingHorizontal: wp(7),
     paddingTop: hp(3),
+  },
+  scrollComponent: {
+    marginTop: hp(10),
   },
   component: {
     paddingBottom: hp(2),

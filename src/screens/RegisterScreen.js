@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -11,9 +11,43 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from 'react-native';
 
+import axios from 'axios';
+
 const RegisterScreen = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [checkPwd, setCheckPwd] = useState("");
+  const [userName, setUserName] = useState("");
+
+  function register() {
+    if(email.trim() == "") {
+      Alert.alert("이메일 입력 확인", "이메일이 입력되지 않았습니다.");
+    } else if(password.trim() == "") {
+      Alert.alert("비밀번호 입력 확인", "비밀번호가 입력되지 않았습니다.");
+    } else if (password != checkPwd ) {
+      Alert.alert("비밀번호 불일치", "비밀번호가 일치하지 않습니다.");
+    } else {
+      axios.post("http://localhost:8080/v1/users/register",  
+        {
+          name : userName,
+          username : userName,
+          email: email,
+          password: password
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function(resp) {
+          Alert.alert("회원가입 성공", "회원가입이 완료되었습니다.");
+        }).catch(error => {
+          console.error('API 요청 에러:', error);
+        }) 
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.topArea}>
@@ -26,10 +60,32 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.formArea}>
-        <TextInput style={styles.inputField} placeholder={'아이디'} />
-        <TextInput style={styles.inputField} placeholder={'비밀번호'} />
-        <TextInput style={styles.inputField} placeholder={'비밀번호확인'} />
-        <TextInput style={styles.inputField} placeholder={'이메일'} />
+        <TextInput 
+          style={styles.inputField} 
+          placeholder={'이메일'}
+          onChangeText={(email) => setEmail(email)} 
+          value={email} 
+          placeholderTextColor="#003f5c"/>
+        <TextInput 
+          style={styles.inputField} 
+          placeholder={'비밀번호'}
+          onChangeText={(password) => setPassword(password)} 
+          value={password} 
+          placeholderTextColor="#003f5c"
+          secureTextEntry={true}/>
+        <TextInput 
+          style={styles.inputField} 
+          placeholder={'비밀번호 확인'} 
+          onChangeText={(checkPwd) => setCheckPwd(checkPwd)} 
+          value={checkPwd} 
+          placeholderTextColor="#003f5c"
+          secureTextEntry={true}/>
+        <TextInput 
+          style={styles.inputField} 
+          placeholder={'이름'}
+          onChangeText={(userName) => setUserName(userName)} 
+          value={userName} 
+          placeholderTextColor="#003f5c"/>
       </View>
 
       {/* 소셜로그인 따로 .js파일 만들어서 해야하나..? */}
@@ -42,7 +98,7 @@ const RegisterScreen = () => {
         </View>
       </View>
 
-      {/* 구글 소셩 로그인으로 바꾸기 */}
+      {/* 구글 소셜 로그인으로 바꾸기 */}
       <View style={{flex: 0.75}}>
         <View style={styles.btnArea}>
           <TouchableOpacity style={styles.googleBtn}>
@@ -53,7 +109,7 @@ const RegisterScreen = () => {
 
       <View style={{flex: 0.75}}>
         <View style={styles.btnArea}>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity style={styles.btn} onPress={()=> register()}>
             <Text style={(styles.Text, {color: 'white'})}>회원가입</Text>
           </TouchableOpacity>
         </View>
@@ -110,6 +166,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     marginBottom: wp(2),
+    color: 'black',
   },
 
   btnArea: {
