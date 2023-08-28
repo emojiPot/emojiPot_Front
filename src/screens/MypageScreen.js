@@ -23,7 +23,7 @@ const MypageScreen = () => {
         />
       </View>
       <TouchableOpacity style={styles.followBtn}>
-        <Text style={styles.followBtnText}>+팔로우</Text>
+        <Text style={styles.followBtnText}>Follow</Text>
       </TouchableOpacity>
       <ScrollView>
         {/* 데이터 그냥 적용해본거 */}

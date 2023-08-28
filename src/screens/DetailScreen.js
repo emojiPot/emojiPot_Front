@@ -1,4 +1,6 @@
+
 import React, {useState, useEffect} from 'react';
+
 import {
   View,
   Text,
@@ -8,10 +10,23 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
+
+import CommentScreen from './CommentScreen';
+
+const DetailScreen = () => {
+  // route.params 에서 전달된 데이터를 가져올 수 있습니다.
+  //   const {content} = route.params;
+
+  // 좋아요 상태와 이를 변경하는 함수를 생성합니다
+  const [liked, setLiked] = useState(false);
+
 import axios from 'axios';
 
 const DetailScreen = ({route}) => {
@@ -37,6 +52,13 @@ const DetailScreen = ({route}) => {
     setLiked(!liked);
   };
 
+
+  const [showCommentScreen, setShowCommentScreen] = useState(false);
+
+  const handleCommentPress = () => {
+    setShowCommentScreen(true); // CommentScreen 컴포넌트를 렌더링할지 결정
+  };
+
   function deletePost() {
     axios.delete('http://localhost:8080/v1/posts/'+{postId})
     .then((res) => {
@@ -52,6 +74,7 @@ const DetailScreen = ({route}) => {
     //게시글 수정 페이지로 이동
     //navigation.navigate('');
   }
+
 
   return (
     <ScrollView style={styles.container}>
@@ -79,6 +102,27 @@ const DetailScreen = ({route}) => {
         />
         <View style={styles.postInfo}>
           {/* 이거 하트 아이콘으로 바꾸기 */}
+          <View style={styles.iconsContainer}>
+            <TouchableOpacity onPress={handleLikePress}>
+              <Icon
+                name={liked ? 'heart' : 'heart-outline'}
+                size={30}
+                color="#C4C1CC"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCommentPress}>
+              <Icon
+                name="chatbubble-ellipses-outline"
+                size={30}
+                color="#C4C1CC"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <Text>위치정보가져와야지</Text>
+          <Text>해당 post의 글 가져와야지</Text>
+        </View>
+        {showCommentScreen && <CommentScreen />}
           {/* 좋아요 클릭 DB로 전송 */}
           <View style={styles.buttonsContainer}>
             <TouchableOpacity onPress={handleLikePress} style={styles.likeButton}> 
@@ -143,6 +187,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
   },
+
+  scrapButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+
   updateButton: {
     backgroundColor: '#99CCFF',
     marginTop: 10,
@@ -158,6 +207,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
+
   },
   image: {
     width: 'auto',
@@ -175,10 +225,22 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     marginTop: 10,
+
+    backgroundColor: '#C4C1CC',
+
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
   },
+  likeText: {
+    fontWeight: 'bold',
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    paddingVertical: 5,
+  },
 });
 
+
 export default DetailScreen;
+

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {TouchableOpacity, Image} from 'react-native';
-import LikesScreen from '../../screens/LikesScreen';
+// import LikesScreen from '../../screens/LikesScreen';
+import DetailScreen from '../../screens/DetailScreen';
 
 function BackBtn({navigation}) {
   return (
@@ -16,11 +17,11 @@ function BackBtn({navigation}) {
 function LikesTab({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: '나의 관심목록',
+      // title: '나의 관심목록',
       headerLeft: () => <BackBtn navigation={navigation} />,
     });
   });
-  return <LikesScreen />;
+  return <DetailScreen />;
 }
 
 export default LikesTab;
