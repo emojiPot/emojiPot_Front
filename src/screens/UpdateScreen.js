@@ -107,7 +107,7 @@ const UpdateScreen = ({route}) => {
             minLength={2}
             placeholder="SEARCH"
             query={{
-              key: "AIzaSyBoXQ21DICycy-tnv4TKkX1w8hsSHqNKow",
+              key: "",
               language: "ko",
               components: "country:kr",
             }}
