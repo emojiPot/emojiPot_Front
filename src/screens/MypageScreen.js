@@ -11,7 +11,12 @@ import {
 
 import MyPageContent from '../components/ScreenComponents/myPageContent';
 
-const MypageScreen = () => {
+const MypageScreen = ({navigation}) => {
+
+  function GoUpdateScreen() {
+    //navigation.navigate('InfoUpdate');
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.profileImageContainer}>
@@ -22,8 +27,10 @@ const MypageScreen = () => {
           style={styles.profileImage}
         />
       </View>
-      <TouchableOpacity style={styles.followBtn}>
-        <Text style={styles.followBtnText}>+팔로우</Text>
+      <TouchableOpacity 
+        style={styles.followBtn}
+        onPress={()=>GoUpdateScreen()}>
+        <Text style={styles.followBtnText}>UPDATE</Text>
       </TouchableOpacity>
       <ScrollView>
         {/* 데이터 그냥 적용해본거 */}

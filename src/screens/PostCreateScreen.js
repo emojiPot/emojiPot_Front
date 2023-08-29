@@ -129,13 +129,13 @@ const PostCreateScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.component}>
-        {/* 검색 결과 출력 안돼서 수정 필요 */}
+        {/* 검색 결과 출력 안돼서 수정 필요 - API 키 문제 */}
           <Text>위치 검색</Text> 
           <GooglePlacesAutocomplete
             minLength={2}
             placeholder="SEARCH"
             query={{
-              key: '',
+              key: 'AIzaSyBoXQ21DICycy-tnv4TKkX1w8hsSHqNKow',
               language: "ko",
               components: "country:kr",
             }}
