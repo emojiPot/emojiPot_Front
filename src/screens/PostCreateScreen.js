@@ -6,47 +6,52 @@ import {
   Button,
   Image,
   TouchableOpacity,
-  CheckBox,
   StyleSheet,
   ScrollView,
   Alert,
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ImagePicker from 'react-native-image-crop-picker';
+import CheckBox from '@react-native-community/checkbox';
 
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import axios from 'axios';
+// import axios from 'axios';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 // 여기서 const 로직들 다시 원하는 방향으로 바꾸기
 const PostCreateScreen = () => {
   // 위치 받아오기
-  const [location, setLocation] = useState('');
+  // const [selectedPosition, setSelectedPosition] = useState(null);
+  // const [showMap, setShowMap] = useState(false);
 
-  const handleLocationChange = text => {
-    setLocation(text);
-  };
+  // const handleMapClick = event => {
+  //   const clickedPosition = event.nativeEvent.coordinate;
+  //   setSelectedPosition(clickedPosition);
+  // };
 
-  useEffect(() => {
-    // 위치 정보 받아오기
-    Geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        setLocation(`Latitude: ${latitude}, Longitude: ${longitude}`);
-      },
-      error => {
-        console.error(error);
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-  }, []); // useEffect를 사용하여 컴포넌트가 마운트될 때 위치 정보를 받아옴
+  // const handleLocationSave = () => {
+  //   setShowMap(!showMap);
+  //   if (selectedPosition) {
+  //     // 여기에 클릭한 위치를 저장하는 로직을 추가합니다.
+  //     // 예를 들어, 서버에 위치 정보를 전송하거나 로컬 상태에 저장할 수 있습니다.
+  //     console.log('Saved position:', selectedPosition);
+  //   }
+  // };
+
+  const [initialRegion, setInitialRegion] = useState({
+    latitude: 35.91395373474155,
+    longitude: 127.73829440215488,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  });
 
   // 날짜 받아오기
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -89,17 +94,50 @@ const PostCreateScreen = () => {
     setPostText(text);
   };
 
-  const [token, setToken] = useState('');
+  //공개,비공개 선택
+  const [isChecked, setIsChecked] = useState(false);
 
-  const getToken = async () => {
-    try {
-      setToken(await AsyncStorage.getItem('token'));
-      if (token == null) { console.log('Token not found');}
-    } catch (error) {
-      console.error('Error retrieving token:', error);
-    }
+  const handleCheckBoxChange = () => {
+    setIsChecked(!isChecked);
   };
 
+  const [token, setToken] = useState('');
+
+  // const getToken = async () => {
+  //   try {
+  //     setToken(await AsyncStorage.getItem('token'));
+  //     if (token == null) { console.log('Token not found');}
+  //   } catch (error) {
+  //     console.error('Error retrieving token:', error);
+  //   }
+  // };
+
+  // function uploadPost() {
+  //   getToken();
+
+  //   if(location.trim() == "") {
+  //     Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
+  //   } else if(postText.trim() == "") {
+  //     Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
+  //   } else {
+  //     axios.post("http://localhost:8080/v1/posts",
+  //       {
+  //         location: location,
+  //         emotion: selectedEmotion,
+  //         record: postText,
+  //         is_opened : 1
+  //       }, {
+  //         headers: {
+  //           'Authorization' : `Bearer ${token}`,
+  //           'Content-Type': 'application/json'
+  //         }
+  //       }).then(function(resp) {
+  //         console.error('게시글 등록 성공!', error);
+  //       }).catch(error => {
+  //         console.error('API 요청 에러:', error);
+  //       })
+  //   }
+  // }
   function uploadPost() {
     getToken();
     if(location.trim() == "") {
@@ -210,15 +248,17 @@ const PostCreateScreen = () => {
             style={styles.postTextInput}
           />
         </View>
-        <View style={styles.component}>
-          <Text>공개/비공개</Text>
-          {/* <CheckBox></CheckBox> */}
-        </View>
       </ScrollView>
       <View style={styles.component}>
-        <TouchableOpacity 
-          style={styles.uploadBtn}  
-          onPress={()=>uploadPost()}>
+        <View style={styles.checkBoxContainer}>
+          <Text style={{fontSize: 16}}>공개/비공개</Text>
+          <CheckBox
+            value={isChecked}
+            onValueChange={handleCheckBoxChange}
+            style={styles.checkBox}
+          />
+        </View>
+        <TouchableOpacity style={styles.uploadBtn}>
           <Text style={styles.uploadBtnText}>여행기록 업로드</Text>
         </TouchableOpacity>
       </View>
@@ -275,8 +315,7 @@ const styles = StyleSheet.create({
     flex: 1, //전체의 공간을 차지한다는 의미
     flexDirection: 'column',
     backgroundColor: 'white',
-    paddingLeft: wp(7),
-    paddingRight: wp(7),
+    paddingHorizontal: wp(7),
     paddingTop: hp(3),
   },
   scrollComponent: {
@@ -285,28 +324,11 @@ const styles = StyleSheet.create({
   component: {
     paddingBottom: hp(2),
   },
-  // 버튼스타일
-  uploadBtn: {
-    backgroundColor: '#C4C1CC',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  uploadBtnText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  locationInput: {},
-  postTextInput: {
-    height: 150,
-    borderColor: '#C4C1CC',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 5,
+  // locationInput: {},
+  map: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   emotionContainer: {
     flexDirection: 'row',
@@ -329,6 +351,34 @@ const styles = StyleSheet.create({
   },
   selectedEmotion: {
     backgroundColor: '#FFD700', // 선택된 이모지의 배경색 변경
+  },
+  postTextInput: {
+    height: 150,
+    borderColor: '#C4C1CC',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 5,
+  },
+  checkBoxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+  },
+  // 버튼스타일
+  uploadBtn: {
+    backgroundColor: '#C4C1CC',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  uploadBtnText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

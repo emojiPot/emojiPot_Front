@@ -25,7 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const UpdateScreen = ({route}) => {
-  //const {postId} = route.params.postId;
+  const postId = route.params.postId;
   const [location, setLocation] = useState('');
   const [selectedPhotos, setSelectedPhotos] = useState([]);
   const [selectedEmotion, setSelectedEmotion] = useState(null);
@@ -33,15 +33,16 @@ const UpdateScreen = ({route}) => {
   const [token, setToken] = useState('');
 
   // 게시글 상세 조회 서버에서 아직 구현 미완료
-  //useEffect(() => {
-  //  axios.get('http://localhost:8080/v1/posts/'+{postId})
-  //      .then((res) => {
-  //         
-  //      })
-  //      .catch((err)=>{
-  //          console.log(err)
-  //      })
-  //}, [])
+  useEffect(() => {
+    axios.get('http://localhost:8080/v1/posts/' + postId)
+        .then((res) => {
+          setLocation(res.data.result.location);
+          setRecord(res.data.result.record);
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+   }, [])
 
   const handlePhotoUpload = async () => {
     try {
@@ -265,6 +266,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginTop: 5,
+    color: 'black',
   },
   emotionContainer: {
     flexDirection: 'row',

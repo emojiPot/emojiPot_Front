@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import PostCreateScreen from '../../screens/PostCreateScreen';
+// import DetailScreen from '../../screens/DetailScreen';
 
 function BackBtn({navigation}) {
   return (
@@ -16,7 +17,7 @@ function BackBtn({navigation}) {
 function PostTab({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: '글작성',
+      // title: '글작성',
       headerLeft: () => <BackBtn navigation={navigation} />, // 뒤로가기 버튼 추가
     });
   });

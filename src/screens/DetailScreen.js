@@ -13,14 +13,21 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+
+import CommentScreen from './CommentScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DetailScreen = ({route}) => {
-  //const postId = route.params.postId;
-  const postId = 1;
+  const navigation = useNavigation();
+  const postId = route.params.postId;
+  //const postId = 1;
   const [liked, setLiked] = useState(false);
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [record, setRecord] = useState("");
+  const [showCommentScreen, setShowCommentScreen] = useState(false);
+  const [token, setToken] = useState('');
 
   // 화면 시작할 때 바로 서버에서 해당 게시글의 정보 가져오기
   useEffect(() => {
@@ -70,8 +77,9 @@ const DetailScreen = ({route}) => {
 
   // 게시글 수정
   function updatePost() {
-    //게시글 수정 페이지로 이동
-    //navigation.navigate('');
+    navigation.navigate('Update', {
+      postId: postId,
+    });
   }
 
   return (
@@ -99,6 +107,7 @@ const DetailScreen = ({route}) => {
           resizeMode="cover"
         />
         <View style={styles.postInfo}>
+          {/* {showCommentScreen && <CommentScreen />} */}
           {/* 좋아요 클릭 DB로 전송 */}
           <View style={styles.likeCmdBtnContainer}>
             <TouchableOpacity onPress={handleLikePress} style={styles.likeButton}> 

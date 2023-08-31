@@ -16,7 +16,7 @@ function BackBtn({navigation}) {
 function LikesTab({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: '나의 관심목록',
+      // title: '나의 관심목록',
       headerLeft: () => <BackBtn navigation={navigation} />,
     });
   });
