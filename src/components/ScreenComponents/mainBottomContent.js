@@ -13,7 +13,7 @@ function MainBottomContent() {
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 35) * 0.49; // 스크린 비율에 맞게 이미지 크기 조정
 
-  const postId = 13; // 임시로 하였으며 image 테이블에서 이미지를 가져오면서 postId도 같이 가져올 수 있기 때문에 수정 필요
+  const postId = 16; // 임시로 하였으며 image 테이블에서 이미지를 가져오면서 postId도 같이 가져올 수 있기 때문에 수정 필요
 
   const searchData = [
     {

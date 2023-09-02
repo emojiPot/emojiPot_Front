@@ -20,23 +20,52 @@ import {
 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import base64 from 'base-64';
 
 const UserInfoUpdateScreen = () => {
     const [token, setToken] = useState('');
 
     const getToken = async () => {
       try {
-        setToken(await AsyncStorage.getItem('token'));
+        const storedToken = await AsyncStorage.getItem('token') || '';
+        console.log('토큰 확인');
+        console.log(storedToken);
+        setToken(storedToken);
         if (token == null) { console.log('Token not found');}
       } catch (error) {
         console.error('Error retrieving token:', error);
       }
     };
 
-    // const username = 'sunyoung';
+    const [userName, setUserName] = useState('');
+
+    const handleUserNameChange = text => {
+      setUserName(text);
+    };
+
+    const [introduce, setIntroduce] = useState('');
+
+    const handleIntroduceChange = text => {
+      setIntroduce(text);
+    };
+
+    const [userId, setUserId] = useState('');
+
+    const handleUserIdChange = text => {
+      setUserId(text);
+    };
+
+    function getDecodetoken() {
+      getToken();
+      let payload = token.substring(token.indexOf('.')+1,token.lastIndexOf('.'));
+      let dec = base64.decode(payload);
+      handleUserIdChange(dec.userId);
+      handleUserNameChange(dec.userName);
+    }
+
     // useEffect(() => {
-    //     getToken();
-    //     axios.get('http://localhost:8080/v1/user/info' + username, 
+    //     getDecodetoken();
+    //     axios.get('http://localhost:8080/v1/user/info' + userName, 
     //     {
     //       headers: {
     //         'Authorization' : 'Bearer ' + token,
@@ -69,52 +98,35 @@ const UserInfoUpdateScreen = () => {
     }
   };
 
-  const [userName, setUserName] = useState('');
-
-  const handleUserNameChange = text => {
-    setUserName(text);
-  };
-
-  const [introduce, setIntroduce] = useState('');
-
-  const handleIntroduceChange = text => {
-    setIntroduce(text);
-  };
-
-  const [userId, setUserId] = useState('');
-
-  const handleUserIdChange = text => {
-    setUserId(text);
-  };
-
   function uploadUserInfo() {
-    getToken();
-    if(userName.trim() == "") {
-      Alert.alert("사용자 이름 확인", "사용자 이름은 필수 입력 사항입니다.");
-    } else {
-      axios.post("http://localhost:8080/v1/users/modify/" + userId,  
-        {
-          userName: userName,
-          introduce: introduce,
-        }, {
-          headers: {
-            'Authorization' : 'Bearer ' + token,
-            'Content-Type': 'application/json'
-          }
-        }).then(function(resp) {
-          Alert.alert("정보 변경 성공!", "사용자 정보가 성공적으로 변경되었습니다.");
-          // 마이페이지로 이동
-        }).catch(error => {
-          console.error('API 요청 에러:', error);
-        }) 
-    }
+    // getToken();
+    // if(userName.trim() == "") {
+    //   Alert.alert("사용자 이름 확인", "사용자 이름은 필수 입력 사항입니다.");
+    // } else {
+    //   axios.post("http://localhost:8080/v1/users/modify/" + userId,  
+    //     {
+    //       userName: userName,
+    //       introduce: introduce,
+    //     }, {
+    //       headers: {
+    //         'Authorization' : 'Bearer ' + token,
+    //         'Content-Type': 'application/json'
+    //       }
+    //     }).then(function(resp) {
+    //       Alert.alert("정보 변경 성공!", "사용자 정보가 성공적으로 변경되었습니다.");
+    //       // 마이페이지로 이동
+    //     }).catch(error => {
+    //       console.error('API 요청 에러:', error);
+    //     }) 
+    // }
+    getDecodetoken();
   }
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollComponent}>
         <View style={styles.component}>
-          <Text>사진업로드(5장)</Text>
+          <Text>프로필 사진</Text>
           <TouchableOpacity onPress={handlePhotoUpload}>
             <Text>사진을 선택하세요</Text>
           </TouchableOpacity>

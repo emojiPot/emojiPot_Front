@@ -32,7 +32,6 @@ const UpdateScreen = ({route}) => {
   const [record, setRecord] = useState('');
   const [token, setToken] = useState('');
 
-  // 게시글 상세 조회 서버에서 아직 구현 미완료
   useEffect(() => {
     axios.get('http://localhost:8080/v1/posts/' + postId)
         .then((res) => {
@@ -67,38 +66,41 @@ const UpdateScreen = ({route}) => {
 
   const getToken = async () => {
     try {
-      setToken(await AsyncStorage.getItem('token'));
+      const storedToken = await AsyncStorage.getItem('token') || '';
+      console.log('토큰 확인');
+      console.log(storedToken);
+      setToken(storedToken);
       if (token == null) { console.log('Token not found');}
     } catch (error) {
       console.error('Error retrieving token:', error);
     }
   };
 
-//   function uploadPost() {
-//     getToken();
-//     if(location.trim() == "") {
-//       Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
-//     } else if(postText.trim() == "") {
-//       Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
-//     } else {
-//       axios.post("http://localhost:8080/v1/posts",  
-//         {
-//           location: location,
-//           emotion: selectedEmotion,
-//           record: postText,
-//           is_opened : 1
-//         }, {
-//           headers: {
-//             'Authorization' : 'Bearer ' + token,
-//             'Content-Type': 'application/json'
-//           }
-//         }).then(function(resp) {
-//           console.log('게시글 수정 성공!');
-//         }).catch(error => {
-//           console.error('API 요청 에러:', error);
-//         }) 
-//     }
-//   }
+  // 404 오류가 뜨는데 로그가 제대로 안 찍혀서 원인을 알 수 없음 > 해결 필요
+  function uploadPost() {
+    getToken();
+    if(location.trim() == "") {
+      Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
+    } else if(record.trim() == "") {
+      Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
+    } else {
+      axios.patch("http://localhost:8080/v1/posts"+postId,  
+        {
+          location: location,
+          emotion: selectedEmotion,
+          record: record
+        }, {
+          headers: {
+            'Authorization' : 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          }
+        }).then(function(resp) {
+          console.log('게시글 수정 성공!');
+        }).catch(error => {
+          console.error('API 요청 에러:', error);
+        }) 
+    }
+  }
 
   return (
     <View style={styles.container}>

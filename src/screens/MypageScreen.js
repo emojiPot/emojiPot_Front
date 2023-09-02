@@ -8,13 +8,14 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-
+import { useNavigation } from '@react-navigation/native';
 import MyPageContent from '../components/ScreenComponents/myPageContent';
 
-const MypageScreen = ({navigation}) => {
+const MypageScreen = () => {
+  const navigation = useNavigation();
 
   function GoUpdateScreen() {
-    //navigation.navigate('InfoUpdate');
+    navigation.navigate('UserUpdate');
   }
 
   return (

@@ -49,9 +49,8 @@ function LogoutScreen({navigation}) {
         .then(function (resp) {
           console.log(resp.data.result.token);
           AsyncStorage.setItem('token', resp.data.result.token);
-          navigation.navigate('Home');
+          navigation.navigate('TabNav');
         }).catch(error => {
-
           console.error('API 요청 에러:', error);
         });
     }

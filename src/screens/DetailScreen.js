@@ -44,7 +44,10 @@ const DetailScreen = ({route}) => {
   // 로그인했을 때 저장한 토큰 가져오기
   const getToken = async () => {
     try {
-      setToken(await AsyncStorage.getItem('token'));
+      const storedToken = await AsyncStorage.getItem('token') || '';
+      console.log('토큰 확인');
+      console.log(storedToken);
+      setToken(storedToken);
       if (token == null) { console.log('Token not found');}
     } catch (error) {
       console.error('Error retrieving token:', error);
@@ -68,7 +71,7 @@ const DetailScreen = ({route}) => {
     })
     .then((res) => {
         Alert.alert("게시글 삭제 완료", "게시글이 성공적으로 삭제되었습니다.");
-        // 게시글 목록 화면으로 이동
+        navigation.goBack(null);
     })
     .catch((err)=>{
         console.log(err)

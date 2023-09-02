@@ -21,9 +21,9 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-// import axios from 'axios';
+import axios from 'axios';
 
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 // 여기서 const 로직들 다시 원하는 방향으로 바꾸기
@@ -103,49 +103,27 @@ const PostCreateScreen = () => {
 
   const [token, setToken] = useState('');
 
-  // const getToken = async () => {
-  //   try {
-  //     setToken(await AsyncStorage.getItem('token'));
-  //     if (token == null) { console.log('Token not found');}
-  //   } catch (error) {
-  //     console.error('Error retrieving token:', error);
-  //   }
-  // };
+  const getToken = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem('token') || '';
+      console.log('토큰 확인');
+      console.log(storedToken);
+      setToken(storedToken);
+      if (token == null) { console.log('Token not found');}
+    } catch (error) {
+      console.error('Error retrieving token:', error);
+    }
+  };
 
-  // function uploadPost() {
-  //   getToken();
-
-  //   if(location.trim() == "") {
-  //     Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
-  //   } else if(postText.trim() == "") {
-  //     Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
-  //   } else {
-  //     axios.post("http://localhost:8080/v1/posts",
-  //       {
-  //         location: location,
-  //         emotion: selectedEmotion,
-  //         record: postText,
-  //         is_opened : 1
-  //       }, {
-  //         headers: {
-  //           'Authorization' : `Bearer ${token}`,
-  //           'Content-Type': 'application/json'
-  //         }
-  //       }).then(function(resp) {
-  //         console.error('게시글 등록 성공!', error);
-  //       }).catch(error => {
-  //         console.error('API 요청 에러:', error);
-  //       })
-  //   }
-  // }
   function uploadPost() {
     getToken();
+
     if(location.trim() == "") {
       Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
     } else if(postText.trim() == "") {
       Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
     } else {
-      axios.post("http://localhost:8080/v1/posts",  
+      axios.post("http://localhost:8080/v1/posts",
         {
           location: location,
           emotion: selectedEmotion,
@@ -153,16 +131,17 @@ const PostCreateScreen = () => {
           is_opened : 1
         }, {
           headers: {
-            'Authorization' : 'Bearer ' + token,
+            'Authorization' : `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         }).then(function(resp) {
-          console.log('게시글 등록 성공!');
+          console.error('게시글 등록 성공!', error);
         }).catch(error => {
           console.error('API 요청 에러:', error);
-        }) 
+        })
     }
   }
+
 
   return (
     <View style={styles.container}>
@@ -188,20 +167,6 @@ const PostCreateScreen = () => {
           />
       </View>
       <ScrollView style={styles.scrollComponent}>
-        <View style={styles.component}>
-          <Text>날짜입력</Text>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-            <Text>{selectedDate.toLocaleDateString()}</Text>
-          </TouchableOpacity>
-          {showDatePicker && (
-            <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display="calendar"
-              onChange={handleDateChange}
-            />
-          )}
-        </View>
         <View style={styles.component}>
           <Text>사진업로드(5장)</Text>
           <TouchableOpacity onPress={handlePhotoUpload}>
@@ -258,7 +223,9 @@ const PostCreateScreen = () => {
             style={styles.checkBox}
           />
         </View>
-        <TouchableOpacity style={styles.uploadBtn}>
+        <TouchableOpacity 
+          style={styles.uploadBtn}
+          onPress={()=>uploadPost()}>
           <Text style={styles.uploadBtnText}>여행기록 업로드</Text>
         </TouchableOpacity>
       </View>
