@@ -9,6 +9,7 @@ function App() {
   const [selectedLocation, setSelectedLocation] = useState(null); // 추가: 선택된 장소의 좌표 상태
   const mapRef = useRef(null); //현재 컴포넌트에 대한 참조 생성
   const placesAutocompleteRef = useRef(null);
+
   //검색 결과로 장소 이동
   const handlePlaceSelect = details => {
     const {location, name, formatted_address} = details.geometry;
@@ -22,6 +23,7 @@ function App() {
     setSelectedLocation(newRegion); // 선택된 장소의 좌표 업데이트
     mapRef.current.animateToRegion(newRegion, 200);
     placesAutocompleteRef.current.setAddressText('');
+    console.log(`Latitude: ${location.lat}, Longitude: ${location.lng}`);
   };
 
   return (

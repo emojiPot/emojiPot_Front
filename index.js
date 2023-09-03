@@ -6,7 +6,7 @@ import {AppRegistry} from 'react-native';
 //enableScreens();
 
 //import App from './src/App';
-import App from './Map/map.js';
+import App from './Map/ar-map.js';
 import {name as appName} from './app.json';
 
 AppRegistry.registerComponent(appName, () => App);
