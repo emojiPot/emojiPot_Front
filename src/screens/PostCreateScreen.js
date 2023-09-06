@@ -15,6 +15,7 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ImagePicker from 'react-native-image-crop-picker';
 import CheckBox from '@react-native-community/checkbox';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   widthPercentageToDP as wp,
@@ -22,47 +23,26 @@ import {
 } from 'react-native-responsive-screen';
 
 import axios from 'axios';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-// 여기서 const 로직들 다시 원하는 방향으로 바꾸기
 const PostCreateScreen = () => {
-  // 위치 받아오기
-  // const [selectedPosition, setSelectedPosition] = useState(null);
-  // const [showMap, setShowMap] = useState(false);
 
-  // const handleMapClick = event => {
-  //   const clickedPosition = event.nativeEvent.coordinate;
-  //   setSelectedPosition(clickedPosition);
-  // };
+  const [searchPlace, setSearchPlace] = useState('');
 
-  // const handleLocationSave = () => {
-  //   setShowMap(!showMap);
-  //   if (selectedPosition) {
-  //     // 여기에 클릭한 위치를 저장하는 로직을 추가합니다.
-  //     // 예를 들어, 서버에 위치 정보를 전송하거나 로컬 상태에 저장할 수 있습니다.
-  //     console.log('Saved position:', selectedPosition);
-  //   }
-  // };
-
-  const [initialRegion, setInitialRegion] = useState({
-    latitude: 35.91395373474155,
-    longitude: 127.73829440215488,
-    latitudeDelta: 5,
-    longitudeDelta: 5,
-  });
-
-  // 날짜 받아오기
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const handleDateChange = (event, selected) => {
-    if (selected) {
-      setSelectedDate(selected);
+  // 위치 검색
+  const getSearchPlace = async () => {
+    try {
+      const getPlace = await AsyncStorage.getItem('searchPlace') || '';
+      console.log('검색 장소 확인');
+      console.log(getPlace);
+      setSearchPlace(getPlace);
+      if (searchPlace == null) { console.log('Search Place not found');}
+    } catch (error) {
+      console.error('Error retrieving token:', error);
     }
-    setShowDatePicker(false);
   };
+
+  const navigation = useNavigation();
 
   //사진 받아오기
   const [selectedPhotos, setSelectedPhotos] = useState([]);
@@ -110,6 +90,7 @@ const PostCreateScreen = () => {
       console.log(storedToken);
       setToken(storedToken);
       if (token == null) { console.log('Token not found');}
+      getSearchPlace();
     } catch (error) {
       console.error('Error retrieving token:', error);
     }
@@ -118,14 +99,12 @@ const PostCreateScreen = () => {
   function uploadPost() {
     getToken();
 
-    if(location.trim() == "") {
-      Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
-    } else if(postText.trim() == "") {
+    if(postText.trim() == "") {
       Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
     } else {
       axios.post("http://localhost:8080/v1/posts",
         {
-          location: location,
+          location: searchPlace,
           emotion: selectedEmotion,
           record: postText,
           is_opened : 1
@@ -135,36 +114,26 @@ const PostCreateScreen = () => {
             'Content-Type': 'application/json'
           }
         }).then(function(resp) {
-          console.error('게시글 등록 성공!', error);
+          console.log('게시글 등록 성공!');
         }).catch(error => {
           console.error('API 요청 에러:', error);
         })
     }
   }
 
+  function goGoogleMap() {
+    navigation.navigate('GoogleMap');
+  }
+
 
   return (
     <View style={styles.container}>
       <View style={styles.component}>
-        {/* 검색 결과 출력 안돼서 수정 필요 - API 키 문제 */}
-          <Text>위치 검색</Text> 
-          <GooglePlacesAutocomplete
-            minLength={2}
-            placeholder="SEARCH"
-            query={{
-              key: 'AIzaSyBoXQ21DICycy-tnv4TKkX1w8hsSHqNKow',
-              language: "ko",
-              components: "country:kr",
-            }}
-            keyboardShouldPersistTaps={"handled"}
-            fetchDetails={true}
-            onPress={(data, details) => {console.log(data, details);}}
-            onFail={(error) => console.log(error)}
-            onNotFound={() => console.log("no results")}
-            keepResultsAfterBlur={true}
-            enablePoweredByContainer={false}
-            styles={styles.search}
-          />
+        <TouchableOpacity 
+          style={styles.uploadBtn}
+          onPress={()=>goGoogleMap()}>
+          <Text style={styles.uploadBtnText}>위치 검색</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView style={styles.scrollComponent}>
         <View style={styles.component}>

@@ -64,6 +64,19 @@ const UpdateScreen = ({route}) => {
     setRecord(text);
   };
 
+  // 위치 검색
+  const getSearchPlace = async () => {
+    try {
+      const getPlace = await AsyncStorage.getItem('updatePlace') || '';
+      console.log('검색 장소 확인');
+      console.log(getPlace);
+      setLocation(getPlace);
+      if (location == null) { console.log('Update Place not found');}
+    } catch (error) {
+      console.error('Error retrieving token:', error);
+    }
+  };
+
   const getToken = async () => {
     try {
       const storedToken = await AsyncStorage.getItem('token') || '';
@@ -71,6 +84,7 @@ const UpdateScreen = ({route}) => {
       console.log(storedToken);
       setToken(storedToken);
       if (token == null) { console.log('Token not found');}
+      getSearchPlace();
     } catch (error) {
       console.error('Error retrieving token:', error);
     }
@@ -102,27 +116,18 @@ const UpdateScreen = ({route}) => {
     }
   }
 
+  function goGoogleMap() {
+    navigation.navigate('GoogleMapUpdate');
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.component}>
-          <Text>위치 검색</Text>
-          <GooglePlacesAutocomplete
-            minLength={2}
-            placeholder="SEARCH"
-            query={{
-              key: "AIzaSyBoXQ21DICycy-tnv4TKkX1w8hsSHqNKow",
-              language: "ko",
-              components: "country:kr",
-            }}
-            keyboardShouldPersistTaps={"handled"}
-            fetchDetails={true}
-            onPress={(data, details) => {console.log(data, details);}}
-            onFail={(error) => console.log(error)}
-            onNotFound={() => console.log("no results")}
-            keepResultsAfterBlur={true}
-            enablePoweredByContainer={false}
-            styles={styles.search}
-          />
+        <TouchableOpacity 
+          style={styles.uploadBtn}
+          onPress={()=>goGoogleMap()}>
+          <Text style={styles.uploadBtnText}>위치 검색</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView style={styles.scrollComponent}>
         <View style={styles.component}>
