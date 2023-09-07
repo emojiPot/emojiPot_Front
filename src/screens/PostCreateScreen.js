@@ -10,9 +10,6 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import Geolocation from '@react-native-community/geolocation';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import ImagePicker from 'react-native-image-crop-picker';
 import CheckBox from '@react-native-community/checkbox';
 import { useNavigation } from '@react-navigation/native';
@@ -114,7 +111,9 @@ const PostCreateScreen = () => {
             'Content-Type': 'application/json'
           }
         }).then(function(resp) {
-          console.log('게시글 등록 성공!');
+          console.log('게시글 수정 성공!');
+          Alert.alert("게시글 수정 성공!", "게시글이 성공적으로 수정되었습니다.");
+          navigation.navigate('TabNav');
         }).catch(error => {
           console.error('API 요청 에러:', error);
         })
@@ -128,22 +127,22 @@ const PostCreateScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.component}>
+      <View style={styles.component1}>
         <TouchableOpacity 
-          style={styles.uploadBtn}
+          style={styles.componetn1Btn}
           onPress={()=>goGoogleMap()}>
-          <Text style={styles.uploadBtnText}>위치 검색</Text>
+          <Text style={styles.componentText}>위치 검색</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.componetn1Btn}
+          onPress={handlePhotoUpload}>
+            <Text style={styles.componentText}>사진업로드(5장)</Text>
         </TouchableOpacity>
       </View>
+      {/* 검색한 장소를 업로드 버튼 클릭 시 가져오고 있기 때문에 바로 출력이 안 됨 -> 어떻게 해결할 수 있을지.. */}
+      <Text style={styles.searchLocationText}>🚩 {searchPlace}</Text> 
       <ScrollView style={styles.scrollComponent}>
         <View style={styles.component}>
-          <Text>사진업로드(5장)</Text>
-          <TouchableOpacity onPress={handlePhotoUpload}>
-            <Text>사진을 선택하세요</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.component}>
-          <Text>3가지 감정이모지 박스</Text>
           <View style={styles.emotionContainer}>
             <TouchableOpacity
               style={[
@@ -203,50 +202,6 @@ const PostCreateScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  search: {
-    // container 감싸고 있는 컴포넌트
-    container: {},
-    // input을 감싸는 컴포넌트
-    textInputContainer: {
-      flexDirection: "row",
-    },
-    // input창
-    textInput: {
-      backgroundColor: "#c8c7cc",
-      borderRadius: 8,
-      paddingVertical: 9,
-      paddingHorizontal: 12,
-      fontSize: 16,
-      color: "#6c6c6e",
-    },
-    // 검색결과 리스트 컴포넌트
-    listView: {
-      backgroundColor: "#c8c7cc",
-      borderRadius: 10,
-      paddingHorizontal: 10,
-      elevation: 8,
-      shadowColor: "#6164BB",
-    },
-    // 검색결과 행
-    row: {
-       paddingVertical: 20,
-    },
-    // 검색결과 divided line
-    separator: {
-      height: 2,
-      backgroundColor: "#c8c7cc",
-    },
-    // 검색결과 text
-    description: {
-      fontSize: 15,
-    },
-    // 필요없음
-    loader: {
-      flexDirection: "row",
-      justifyContent: "flex-end",
-      height: 20,
-    },
-  },
   container: {
     flex: 1, //전체의 공간을 차지한다는 의미
     flexDirection: 'column',
@@ -255,12 +210,34 @@ const styles = StyleSheet.create({
     paddingTop: hp(3),
   },
   scrollComponent: {
-    marginTop: hp(10),
+    marginTop: hp(3),
   },
-  component: {
+  component1: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingBottom: hp(2),
   },
-  // locationInput: {},
+  componetn1Btn: {
+    backgroundColor: '#C4C1CC',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  component2: {
+    paddingBottom: hp(2),
+  },
+  componentText: {
+    color: 'black',
+  },
+  searchLocationText: {
+    color: 'black',
+    borderColor: '#dee2e6',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 7,
+  },
   map: {
     flex: 1,
     width: '100%',

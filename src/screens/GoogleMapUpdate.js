@@ -5,13 +5,14 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function GoogleMapUpdate() {
+const GoogleMapUpdate = ({route}) => {
   //selectedLocation : 선택된 장소의 좌표
   //setSelcetedLocation : 상태변수 업데이트
   const [selectedLocation, setSelectedLocation] = useState(null); // 추가: 선택된 장소의 좌표 상태
   const mapRef = useRef(null); //현재 컴포넌트에 대한 참조 생성
   const placesAutocompleteRef = useRef(null);
   const navigation = useNavigation();
+  const postId = route.params.postId;
 
   //검색 결과로 장소 이동
   const handlePlaceSelect = details => {
@@ -48,7 +49,7 @@ function GoogleMapUpdate() {
             handlePlaceSelect(details); // 장소 선택시 처리하는 함수 호출
             console.log(data);
             AsyncStorage.setItem('updatePlace', data.description);
-            navigation.navigate('Update');
+            navigation.navigate('Update', {postId: postId,});
           }}
           onFail={error => console.log(error)}
           onNotFound={() => console.log('no results')}

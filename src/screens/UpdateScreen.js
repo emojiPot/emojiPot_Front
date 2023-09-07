@@ -21,10 +21,10 @@ import {
 import axios from 'axios';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { useNavigation } from '@react-navigation/native';
 
 const UpdateScreen = ({route}) => {
+  const navigation = useNavigation();
   const postId = route.params.postId;
   const [location, setLocation] = useState('');
   const [selectedPhotos, setSelectedPhotos] = useState([]);
@@ -90,15 +90,15 @@ const UpdateScreen = ({route}) => {
     }
   };
 
-  // 404 오류가 뜨는데 로그가 제대로 안 찍혀서 원인을 알 수 없음 > 해결 필요
   function uploadPost() {
     getToken();
+    console.log("postId : " + postId);
     if(location.trim() == "") {
       Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
     } else if(record.trim() == "") {
       Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
     } else {
-      axios.patch("http://localhost:8080/v1/posts"+postId,  
+      axios.patch("http://localhost:8080/v1/posts/"+postId,  
         {
           location: location,
           emotion: selectedEmotion,
@@ -117,7 +117,7 @@ const UpdateScreen = ({route}) => {
   }
 
   function goGoogleMap() {
-    navigation.navigate('GoogleMapUpdate');
+    navigation.navigate('GoogleMapUpdate',  {postId: postId,});
   }
 
   return (
