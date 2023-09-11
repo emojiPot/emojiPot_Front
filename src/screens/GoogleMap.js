@@ -87,11 +87,24 @@ const style = StyleSheet.create({
     textInputContainer: {
       backgroundColor: 'grey',
       height: 30,
+      color: 'black',
     },
     textInput: {
       height: 38,
       color: '#5d5d5d',
       fontSize: 16,
+    },
+    listView: {
+      backgroundColor: "#ffffff",
+      borderRadius: 10,
+      paddingHorizontal: 10,
+      elevation: 8,
+      shadowColor: "#6164BB",
+    },
+    description: {
+      fontSize: 15,
+      fontFamily: "spoqaR",
+      color: 'black',
     },
     predefinedPlacesDescription: {
       color: '#1faadb',

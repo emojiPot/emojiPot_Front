@@ -127,21 +127,19 @@ const PostCreateScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.component1}>
-        <TouchableOpacity 
-          style={styles.componetn1Btn}
-          onPress={()=>goGoogleMap()}>
-          <Text style={styles.componentText}>위치 검색</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.componetn1Btn}
-          onPress={handlePhotoUpload}>
-            <Text style={styles.componentText}>사진업로드(5장)</Text>
-        </TouchableOpacity>
-      </View>
       {/* 검색한 장소를 업로드 버튼 클릭 시 가져오고 있기 때문에 바로 출력이 안 됨 -> 어떻게 해결할 수 있을지.. */}
-      <Text style={styles.searchLocationText}>🚩 {searchPlace}</Text> 
+      {/* <Text style={styles.searchLocationText}>🚩 {searchPlace}</Text>  */}
       <ScrollView style={styles.scrollComponent}>
+      <TouchableOpacity 
+            style={styles.placeBtn}
+            onPress={()=>goGoogleMap()}>
+            <Text style={styles.componentText}>위치 검색</Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+            style={styles.photoBtn}
+            onPress={handlePhotoUpload}>
+              <Text style={styles.componentText}>사진추가 (5장)</Text>
+        </TouchableOpacity>
         <View style={styles.component}>
           <View style={styles.emotionContainer}>
             <TouchableOpacity
@@ -207,23 +205,28 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: 'white',
     paddingHorizontal: wp(7),
-    paddingTop: hp(3),
+    paddingTop: hp(1),
   },
   scrollComponent: {
     marginTop: hp(3),
   },
-  component1: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: hp(2),
-  },
-  componetn1Btn: {
-    backgroundColor: '#C4C1CC',
+  placeBtn: {
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    width: 150,
     marginRight: 10,
+  },
+  photoBtn: {
+    borderColor: '#C4C1CC',
+    borderWidth: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    width: 130,
+    height: 160,
+    marginRight: 10,
+    marginBottom: 5,
   },
   component2: {
     paddingBottom: hp(2),
