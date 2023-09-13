@@ -1,9 +1,13 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './AppTabNavigator/HomeTab';
 import PostScreen from './AppTabNavigator/PostTab';
 import LikesScreen from './AppTabNavigator/LikesTab';
 import MypageScreen from './AppTabNavigator/MypageTab';
+
+import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import Feather from "react-native-vector-icons/Feather";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,7 +19,16 @@ const TabNavi = () => {
           component={HomeScreen}
           options={{
             tabBarIcon: ({color, size}) => (
-              <Icon name="ios-home" color="black" size={size} />
+              <Ionicons name="home-outline" size={20} color="black" />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Map"
+          component={HomeScreen}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <AntDesign name="search1" size={20} color="black" />
             ),
           }}
         />
@@ -24,7 +37,7 @@ const TabNavi = () => {
           component={PostScreen}
           options={{
             tabBarIcon: ({color, size}) => (
-              <Icon name="ios-create" size={size} color="black" />
+              <AntDesign name="pluscircleo" size={20} color="black" />
             ),
           }}
         />
@@ -33,7 +46,7 @@ const TabNavi = () => {
           component={LikesScreen}
           options={{
             tabBarIcon: ({color, size}) => (
-              <Icon name="ios-heart" size={size} color="black" />
+              <Feather name="bookmark" size={20} color="black" />
             ),
           }}
         />
@@ -42,7 +55,7 @@ const TabNavi = () => {
           component={MypageScreen}
           options={{
             tabBarIcon: ({color, size}) => (
-              <Icon name="ios-home" size={size} color="black" />
+              <EvilIcons name="user" size={30} color="black" />
             ),
           }}
         />

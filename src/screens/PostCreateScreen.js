@@ -22,6 +22,9 @@ import {
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import Feather from "react-native-vector-icons/Feather";
+import AntDesign from "react-native-vector-icons/AntDesign";
+
 const PostCreateScreen = () => {
 
   const [searchPlace, setSearchPlace] = useState('');
@@ -133,12 +136,18 @@ const PostCreateScreen = () => {
       <TouchableOpacity 
             style={styles.placeBtn}
             onPress={()=>goGoogleMap()}>
-            <Text style={styles.componentText}>위치 검색</Text>
+            <View style={styles.mapComponent}>
+              <Feather name="map-pin" size={15} color="black" />
+              <Text style={styles.componentText}>  위치 검색</Text>
+            </View>
       </TouchableOpacity>
       <TouchableOpacity 
             style={styles.photoBtn}
             onPress={handlePhotoUpload}>
-              <Text style={styles.componentText}>사진추가 (5장)</Text>
+              <View style={styles.photoComponent}>
+                <AntDesign name="plus" size={60} color="#a0a0a0" />
+                <Text style={styles.componentText}>사진 추가{'\n'}(최대 5장)</Text>
+              </View>
         </TouchableOpacity>
         <View style={styles.component}>
           <View style={styles.emotionContainer}>
@@ -169,32 +178,33 @@ const PostCreateScreen = () => {
           </View>
         </View>
         <View style={styles.component}>
-          <Text>글작성({postText.length}/1000)</Text>
+          <Text style={styles.componentText}>글 작성 ({postText.length}/1000)</Text>
           <TextInput
             multiline
-            placeholder="여기에 글을 작성해주세요!"
+            placeholder="공간에서의 경험이나 정보, 감정을 작성해주세요!"
+            placeholderTextColor="#d3d3d3" 
             value={postText}
             onChangeText={handlePostTextChange}
             maxLength={1000}
             style={styles.postTextInput}
           />
         </View>
-      </ScrollView>
-      <View style={styles.component}>
-        <View style={styles.checkBoxContainer}>
-          <Text style={{fontSize: 16}}>공개/비공개</Text>
-          <CheckBox
-            value={isChecked}
-            onValueChange={handleCheckBoxChange}
-            style={styles.checkBox}
-          />
+        <View style={styles.component}>
+          <View style={styles.checkBoxContainer}>
+            <Text style={{fontSize: 16, color:"black"}}>비공개 설정</Text>
+            <CheckBox
+              value={isChecked}
+              onValueChange={handleCheckBoxChange}
+              style={styles.checkBox}
+            />
+          </View>
+          <TouchableOpacity 
+            style={styles.uploadBtn}
+            onPress={()=>uploadPost()}>
+            <Text style={styles.uploadBtnText}>여행기록 업로드</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity 
-          style={styles.uploadBtn}
-          onPress={()=>uploadPost()}>
-          <Text style={styles.uploadBtnText}>여행기록 업로드</Text>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -210,14 +220,25 @@ const styles = StyleSheet.create({
   scrollComponent: {
     marginTop: hp(3),
   },
-  placeBtn: {
-    paddingHorizontal: 20,
+  mapComponent: { // 위치 검색 아이콘 + 텍스트 스타일 설정
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 3,
+  },
+  photoComponent: { // 사진 추가 아이콘 + 텍스트 스타일 설정
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: "center",
+    alignItems: 'center',
+  },
+  placeBtn: { // 위치 검색 버튼 클릭 스타일 설정
+    paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 5,
     width: 150,
     marginRight: 10,
   },
-  photoBtn: {
+  photoBtn: { // 사진 등록 버튼 클릭 스타일 설정
     borderColor: '#C4C1CC',
     borderWidth: 1,
     paddingHorizontal: 20,
@@ -228,25 +249,14 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 5,
   },
-  component2: {
+  component: { // 글작성, 비공개 설정 컴포넌트 스타일 설정
+    marginTop: 3,
     paddingBottom: hp(2),
   },
-  componentText: {
+  componentText: { // 위치 검색, 사진 추가 텍스트 색상 설정
     color: 'black',
   },
-  searchLocationText: {
-    color: 'black',
-    borderColor: '#dee2e6',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 7,
-  },
-  map: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  emotionContainer: {
+  emotionContainer: { // 감정 평가 컨테이너 스타일 설정
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
@@ -257,7 +267,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 5,
   },
-  emotionIcon: {
+  emotionIcon: { // 감정 평가 세부 이모지 스타일 설정
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -268,21 +278,26 @@ const styles = StyleSheet.create({
   selectedEmotion: {
     backgroundColor: '#FFD700', // 선택된 이모지의 배경색 변경
   },
-  postTextInput: {
+  postTextInput: { // 글 작성 스타일 설정
     height: 150,
     borderColor: '#C4C1CC',
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
     marginTop: 5,
+    color: 'black',
   },
-  checkBoxContainer: {
+  checkBoxContainer: { // 비공개 설정 체크박스 스타일 설정
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingBottom: 10,
+    marginTop: 10,
   },
-  // 버튼스타일
+  checkbox: {
+    
+  },
+  // 글 작성 업로드 버튼스타일
   uploadBtn: {
     backgroundColor: '#C4C1CC',
     paddingHorizontal: 20,

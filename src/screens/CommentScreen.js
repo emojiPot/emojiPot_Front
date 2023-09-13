@@ -12,6 +12,9 @@ const CommentScreen = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
 
+  // 제일 처음에 화면 출력할 때 db에서 댓글 리스트 가져와서 comments에 추가
+  
+  // 댓글 작성한 거 db에 전송
   const handleCommentSubmit = () => {
     if (newComment.trim() !== '') {
       setComments([...comments, newComment]);
@@ -33,6 +36,7 @@ const CommentScreen = () => {
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Add a comment..."
+          placeholderTextColor="#d3d3d3" 
           value={newComment}
           onChangeText={setNewComment}
           style={styles.input}
@@ -56,6 +60,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    color: 'black',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -71,6 +76,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 20,
     marginRight: 10,
+    color: 'black',
   },
   submitButton: {
     backgroundColor: '#C4C1CC',

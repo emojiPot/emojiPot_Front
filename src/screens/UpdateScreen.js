@@ -6,13 +6,12 @@ import {
   Button,
   Image,
   TouchableOpacity,
-  CheckBox,
   StyleSheet,
   ScrollView,
   Alert,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-
+import CheckBox from '@react-native-community/checkbox';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -22,6 +21,9 @@ import axios from 'axios';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+
+import Feather from "react-native-vector-icons/Feather";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const UpdateScreen = ({route}) => {
   const navigation = useNavigation();
@@ -64,14 +66,21 @@ const UpdateScreen = ({route}) => {
     setRecord(text);
   };
 
+  //공개,비공개 선택
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckBoxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   // 위치 검색
   const getSearchPlace = async () => {
     try {
-      const getPlace = await AsyncStorage.getItem('updatePlace') || '';
+      const getPlace = await AsyncStorage.getItem('searchPlace') || '';
       console.log('검색 장소 확인');
       console.log(getPlace);
-      setLocation(getPlace);
-      if (location == null) { console.log('Update Place not found');}
+      setSearchPlace(getPlace);
+      if (searchPlace == null) { console.log('Search Place not found');}
     } catch (error) {
       console.error('Error retrieving token:', error);
     }
@@ -122,20 +131,23 @@ const UpdateScreen = ({route}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.component}>
-        <TouchableOpacity 
-          style={styles.uploadBtn}
-          onPress={()=>goGoogleMap()}>
-          <Text style={styles.uploadBtnText}>위치 검색</Text>
-        </TouchableOpacity>
-      </View>
       <ScrollView style={styles.scrollComponent}>
-        <View style={styles.component}>
-          <Text>사진업로드(5장)</Text>
-          <TouchableOpacity onPress={handlePhotoUpload}>
-            <Text>사진을 선택하세요</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity 
+          style={styles.placeBtn}
+          onPress={()=>goGoogleMap()}>
+          <View style={styles.mapComponent}>
+            <Feather name="map-pin" size={15} color="black" />
+            <Text style={styles.componentText}>  위치 검색</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity 
+            style={styles.photoBtn}
+            onPress={handlePhotoUpload}>
+            <View style={styles.photoComponent}>
+               <AntDesign name="plus" size={60} color="#a0a0a0" />
+               <Text style={styles.componentText}>사진 추가{'\n'}(최대 5장)</Text>
+             </View>
+        </TouchableOpacity>
         <View style={styles.component}>
           <Text>3가지 감정이모지 박스</Text>
           <View style={styles.emotionContainer}>
@@ -166,10 +178,11 @@ const UpdateScreen = ({route}) => {
           </View>
         </View>
         <View style={styles.component}>
-          <Text>글작성({record.length}/1000)</Text>
+          <Text style={styles.componentText}>글 작성 ({record.length}/1000)</Text>
           <TextInput
             multiline
-            placeholder="여기에 글을 작성해주세요!"
+            placeholder="공간에서의 경험이나 정보, 감정을 작성해주세요!"
+            placeholderTextColor="#d3d3d3" 
             value={record}
             onChangeText={handlePostTextChange}
             maxLength={1000}
@@ -177,81 +190,114 @@ const UpdateScreen = ({route}) => {
           />
         </View>
         <View style={styles.component}>
-          <Text>공개/비공개</Text>
-          {/* <CheckBox></CheckBox> */}
+          <View style={styles.checkBoxContainer}>
+              <Text style={{fontSize: 16, color:"black"}}>비공개 설정</Text>
+              <CheckBox
+                value={isChecked}
+                onValueChange={handleCheckBoxChange}
+                style={styles.checkBox}
+              />
+          </View>
+          <TouchableOpacity 
+            style={styles.uploadBtn}
+            onPress={()=>uploadPost()}>
+            <Text style={styles.uploadBtnText}>게시글 수정</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
-      <View style={styles.component}>
-        <TouchableOpacity 
-          style={styles.uploadBtn}  
-          onPress={()=>uploadPost()}>
-          <Text style={styles.uploadBtnText}>게시글 수정</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  search: {
-    // container 감싸고 있는 컴포넌트
-    container: {},
-    // input을 감싸는 컴포넌트
-    textInputContainer: {
-      flexDirection: "row",
-    },
-    // input창
-    textInput: {
-      backgroundColor: "#c8c7cc",
-      borderRadius: 8,
-      paddingVertical: 9,
-      paddingHorizontal: 12,
-      fontSize: 16,
-      color: "#6c6c6e",
-    },
-    // 검색결과 리스트 컴포넌트
-    listView: {
-      backgroundColor: "#c8c7cc",
-      borderRadius: 10,
-      paddingHorizontal: 10,
-      elevation: 8,
-      shadowColor: "#6164BB",
-    },
-    // 검색결과 행
-    row: {
-       paddingVertical: 20,
-    },
-    // 검색결과 divided line
-    separator: {
-      height: 2,
-      backgroundColor: "#c8c7cc",
-    },
-    // 검색결과 text
-    description: {
-      fontSize: 15,
-    },
-    // 필요없음
-    loader: {
-      flexDirection: "row",
-      justifyContent: "flex-end",
-      height: 20,
-    },
-  },
   container: {
     flex: 1, //전체의 공간을 차지한다는 의미
     flexDirection: 'column',
     backgroundColor: 'white',
-    paddingLeft: wp(7),
-    paddingRight: wp(7),
-    paddingTop: hp(3),
+    paddingHorizontal: wp(7),
+    paddingTop: hp(1),
   },
   scrollComponent: {
-    marginTop: hp(10),
+    marginTop: hp(3),
   },
-  component: {
+  mapComponent: { // 위치 검색 아이콘 + 텍스트 스타일 설정
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 3,
+  },
+  photoComponent: { // 사진 추가 아이콘 + 텍스트 스타일 설정
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: "center",
+    alignItems: 'center',
+  },
+  placeBtn: { // 위치 검색 버튼 클릭 스타일 설정
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 5,
+    width: 150,
+    marginRight: 10,
+  },
+  photoBtn: { // 사진 등록 버튼 클릭 스타일 설정
+    borderColor: '#C4C1CC',
+    borderWidth: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    width: 130,
+    height: 160,
+    marginRight: 10,
+    marginBottom: 5,
+  },
+  component: { // 글작성, 비공개 설정 컴포넌트 스타일 설정
+    marginTop: 3,
     paddingBottom: hp(2),
   },
-  // 버튼스타일
+  componentText: { // 위치 검색, 사진 추가 텍스트 색상 설정
+    color: 'black',
+  },
+  emotionContainer: { // 감정 평가 컨테이너 스타일 설정
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    height: 80,
+    borderColor: '#C4C1CC',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 5,
+  },
+  emotionIcon: { // 감정 평가 세부 이모지 스타일 설정
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#C4C1CC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectedEmotion: {
+    backgroundColor: '#FFD700', // 선택된 이모지의 배경색 변경
+  },
+  postTextInput: { // 글 작성 스타일 설정
+    height: 150,
+    borderColor: '#C4C1CC',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 5,
+    color: 'black',
+  },
+  checkBoxContainer: { // 비공개 설정 체크박스 스타일 설정
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+    marginTop: 10,
+  },
+  checkbox: {
+    
+  },
+  // 글 작성 업로드 버튼스타일
   uploadBtn: {
     backgroundColor: '#C4C1CC',
     paddingHorizontal: 20,
@@ -264,38 +310,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  locationInput: {},
-  postTextInput: {
-    height: 150,
-    borderColor: '#C4C1CC',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 5,
-    color: 'black',
-  },
-  emotionContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-    height: 80,
-    borderColor: '#C4C1CC',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 5,
-  },
-  emotionIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#C4C1CC',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  selectedEmotion: {
-    backgroundColor: '#FFD700', // 선택된 이모지의 배경색 변경
   },
 });
 
