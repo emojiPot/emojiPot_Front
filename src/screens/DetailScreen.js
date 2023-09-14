@@ -65,7 +65,9 @@ const DetailScreen = ({route}) => {
 
   // 댓글 페이지로 이동
   const handleGoCmd = () => {
-    navigation.navigate('CommentScreen');
+    navigation.navigate('CommentScreen', {
+      postId: postId,
+    });
   };
 
   // 게시글 삭제
