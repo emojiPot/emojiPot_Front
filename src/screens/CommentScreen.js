@@ -12,6 +12,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 
+// 사용하고자 하는 이모지에 따라 import 이름이 다름 
 const CommentScreen = ({route}) => {
   const postId = route.params.postId;
   const [comments, setComments] = useState([]);

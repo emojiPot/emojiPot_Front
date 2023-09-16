@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Dimensions,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -17,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import CommentScreen from './CommentScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Swiper from 'react-native-swiper';
 
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -32,17 +34,20 @@ const DetailScreen = ({route}) => {
   const [record, setRecord] = useState("");
   const [showCommentScreen, setShowCommentScreen] = useState(false);
   const [token, setToken] = useState('');
-
+  const [photos, setPhotos] = useState([]);
+  
   // 화면 시작할 때 바로 서버에서 해당 게시글의 정보 가져오기
   useEffect(() => {
-   axios.get('http://localhost:8080/v1/posts/' + postId)
-       .then((res) => {
-          setLocation(res.data.result.location);
-          setRecord(res.data.result.record);
-       })
-       .catch((err)=>{
-           console.log(err)
-       })
+   axios
+    .all([axios.get('http://localhost:8080/v1/posts/' + postId), axios.get('http://localhost:8080/v1/posts/' + 23 + '/images')])
+    .then(
+      axios.spread((res1, res2) => {
+        setLocation(res1.data.result.location);
+        setRecord(res1.data.result.record);
+        setPhotos(res2.data.result);
+        console.log(res2.data.result);
+      })
+    )
   }, [])
 
   // 로그인했을 때 저장한 토큰 가져오기
@@ -115,13 +120,16 @@ const DetailScreen = ({route}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <Image
-          source={require('../assest/images/post1.jpg')} // DB에서 이미지 가져와서 출력
-          style={styles.image}
-          resizeMode="cover"
-        />
+        <Swiper style={{ height: hp(40) }}>
+         {photos.map((photo, index) => (
+          <Image
+           key={index}
+           source={{ uri: photo }}
+           style={styles.image}
+          />
+          ))}
+        </Swiper>
         <View style={styles.postInfo}>
-          {/* {showCommentScreen && <CommentScreen />} */}
           {/* 좋아요 클릭 DB로 전송 */}
           <View style={styles.likeCmdBtnContainer}>
             <TouchableOpacity onPress={handleLikePress}> 
