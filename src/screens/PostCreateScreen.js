@@ -114,8 +114,8 @@ const PostCreateScreen = () => {
             'Content-Type': 'application/json'
           }
         }).then(function(resp) {
-          console.log('게시글 수정 성공!');
-          Alert.alert("게시글 수정 성공!", "게시글이 성공적으로 수정되었습니다.");
+          console.log('게시글 등록 성공!');
+          Alert.alert("게시글 등록 성공!", "게시글이 성공적으로 등록되었습니다.");
           navigation.navigate('TabNav');
         }).catch(error => {
           console.error('API 요청 에러:', error);

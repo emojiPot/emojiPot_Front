@@ -79,8 +79,8 @@ const UpdateScreen = ({route}) => {
       const getPlace = await AsyncStorage.getItem('searchPlace') || '';
       console.log('검색 장소 확인');
       console.log(getPlace);
-      setSearchPlace(getPlace);
-      if (searchPlace == null) { console.log('Search Place not found');}
+      setLocation(getPlace);
+      if (getPlace == null) { console.log('Search Place not found');}
     } catch (error) {
       console.error('Error retrieving token:', error);
     }
@@ -119,6 +119,7 @@ const UpdateScreen = ({route}) => {
           }
         }).then(function(resp) {
           console.log('게시글 수정 성공!');
+          Alert.alert("게시글 수정 성공!", "게시글이 성공적으로 수정되었습니다.");
         }).catch(error => {
           console.error('API 요청 에러:', error);
         }) 
