@@ -19,6 +19,7 @@ import GoogleMap from './screens/GoogleMap';
 import PostCreateScreen from './screens/PostCreateScreen';
 import GoogleMapUpdate from './screens/GoogleMapUpdate';
 import CommentScreen from './screens/CommentScreen';
+import PostImageScreen from './screens/PostImageScreen';
 
 const Stack = createStackNavigator();
 
@@ -123,6 +124,15 @@ function App() {
         <Stack.Screen
           name="CommentScreen"
           component={CommentScreen}
+          options={{
+            title: '',
+            headerBackTitleVisible: false,
+            headerBackImage: BackBtn,
+          }}
+        />
+        <Stack.Screen
+          name="PostImageScreen"
+          component={PostImageScreen}
           options={{
             title: '',
             headerBackTitleVisible: false,

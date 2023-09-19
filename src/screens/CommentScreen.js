@@ -34,7 +34,7 @@ const CommentScreen = ({route}) => {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:8080/v1/posts/'+postId+'/comments')
+    axios.get('http://localhost:8080/v1/posts/'+8+'/comments')
         .then((res) => {
           console.log(res.data.result);
           setComments(res.data.result);

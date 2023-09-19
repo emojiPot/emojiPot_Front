@@ -10,12 +10,18 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MyPageContent from '../components/ScreenComponents/myPageContent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MypageScreen = () => {
   const navigation = useNavigation();
 
   function GoUpdateScreen() {
     navigation.navigate('UserUpdate');
+  }
+
+  function UserLogout() {
+    AsyncStorage.removeItem('token');
+    navigation.navigate('Logout');
   }
 
   return (
@@ -28,11 +34,18 @@ const MypageScreen = () => {
           style={styles.profileImage}
         />
       </View>
-      <TouchableOpacity 
-        style={styles.followBtn}
-        onPress={()=>GoUpdateScreen()}>
-        <Text style={styles.followBtnText}>UPDATE</Text>
-      </TouchableOpacity>
+      <View style={styles.userBtn}>
+        <TouchableOpacity 
+          style={styles.followBtn}
+          onPress={()=>GoUpdateScreen()}>
+          <Text style={styles.followBtnText}>UPDATE</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.followBtn}
+          onPress={()=>UserLogout()}>
+          <Text style={styles.followBtnText}>로그아웃</Text>
+        </TouchableOpacity>
+      </View>
       <ScrollView>
         {/* 데이터 그냥 적용해본거 */}
         <MyPageContent />
@@ -58,6 +71,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden', // 이미지를 뷰 경계 내에 강제로 보여주기 위해 overflow 속성 추가
     marginBottom: 10,
   },
+  userBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   profileImage: {
     width: '100%',
     height: '100%',
@@ -68,6 +85,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 5,
     marginBottom: 10,
+    marginRight: 5,
   },
   followBtnText: {
     color: 'black',

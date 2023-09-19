@@ -115,8 +115,10 @@ const PostCreateScreen = () => {
           }
         }).then(function(resp) {
           console.log('게시글 등록 성공!');
-          Alert.alert("게시글 등록 성공!", "게시글이 성공적으로 등록되었습니다.");
-          navigation.navigate('TabNav');
+          console.log(resp.data.result.postId);
+          navigation.navigate('PostImageScreen', {
+            postId: resp.data.result.postId,
+          });
         }).catch(error => {
           console.error('API 요청 에러:', error);
         })
@@ -141,14 +143,6 @@ const PostCreateScreen = () => {
               <Text style={styles.componentText}>  위치 검색</Text>
             </View>
       </TouchableOpacity>
-      <TouchableOpacity 
-            style={styles.photoBtn}
-            onPress={handlePhotoUpload}>
-              <View style={styles.photoComponent}>
-                <AntDesign name="plus" size={60} color="#a0a0a0" />
-                <Text style={styles.componentText}>사진 추가{'\n'}(최대 5장)</Text>
-              </View>
-        </TouchableOpacity>
         <View style={styles.component}>
           <View style={styles.emotionContainer}>
             <TouchableOpacity
@@ -201,7 +195,7 @@ const PostCreateScreen = () => {
           <TouchableOpacity 
             style={styles.uploadBtn}
             onPress={()=>uploadPost()}>
-            <Text style={styles.uploadBtnText}>여행기록 업로드</Text>
+            <Text style={styles.uploadBtnText}>이미지 업로드</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -225,12 +219,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 3,
   },
-  photoComponent: { // 사진 추가 아이콘 + 텍스트 스타일 설정
-    flexDirection: 'column',
-    flex: 1,
-    justifyContent: "center",
-    alignItems: 'center',
-  },
   placeBtn: { // 위치 검색 버튼 클릭 스타일 설정
     paddingHorizontal: 10,
     paddingVertical: 10,
@@ -238,22 +226,11 @@ const styles = StyleSheet.create({
     width: 150,
     marginRight: 10,
   },
-  photoBtn: { // 사진 등록 버튼 클릭 스타일 설정
-    borderColor: '#C4C1CC',
-    borderWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    width: 130,
-    height: 160,
-    marginRight: 10,
-    marginBottom: 5,
-  },
   component: { // 글작성, 비공개 설정 컴포넌트 스타일 설정
     marginTop: 3,
     paddingBottom: hp(2),
   },
-  componentText: { // 위치 검색, 사진 추가 텍스트 색상 설정
+  componentText: { // 위치 검색 텍스트 색상 설정
     color: 'black',
   },
   emotionContainer: { // 감정 평가 컨테이너 스타일 설정
