@@ -141,14 +141,6 @@ const UpdateScreen = ({route}) => {
             <Text style={styles.componentText}>  위치 검색</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity 
-            style={styles.photoBtn}
-            onPress={handlePhotoUpload}>
-            <View style={styles.photoComponent}>
-               <AntDesign name="plus" size={60} color="#a0a0a0" />
-               <Text style={styles.componentText}>사진 추가{'\n'}(최대 5장)</Text>
-             </View>
-        </TouchableOpacity>
         <View style={styles.component}>
           <Text>3가지 감정이모지 박스</Text>
           <View style={styles.emotionContainer}>

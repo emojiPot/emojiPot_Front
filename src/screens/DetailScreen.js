@@ -66,7 +66,9 @@ const DetailScreen = ({route}) => {
   // 게시글 좋아요 반영
   const handleLikePress = () => {
     getToken();
-    axios.post("http://localhost:8080/v1/posts/" + postId + "/likes", // 토큰 전달 오류인 것 같은데 왜..?ㅠㅠ
+
+    console.log("token : " + token);
+    axios.post("http://localhost:8080/v1/posts/" + postId + "/likes", {},
         {
           headers: {
             'Authorization' : 'Bearer ' + token,
@@ -74,7 +76,12 @@ const DetailScreen = ({route}) => {
           }
         }).then(function(resp) {
           console.log('게시글 좋아요 성공!');
-          console.log(resp);
+          if(liked) {
+            setLiked(false);
+          }
+          else {
+            setLiked(true);
+          }
         }).catch(error => {
           console.error('API 요청 에러:', error);
         })

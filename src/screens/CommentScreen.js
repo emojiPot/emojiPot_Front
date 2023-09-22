@@ -18,7 +18,7 @@ const CommentScreen = ({route}) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [comment, setComment] = useState('');
-
+  const [change, setChange] = useState(1);
   const [token, setToken] = useState('');
 
   const getToken = async () => {
@@ -34,7 +34,7 @@ const CommentScreen = ({route}) => {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:8080/v1/posts/'+8+'/comments')
+    axios.get('http://localhost:8080/v1/posts/'+postId+'/comments')
         .then((res) => {
           console.log(res.data.result);
           setComments(res.data.result);
@@ -42,7 +42,7 @@ const CommentScreen = ({route}) => {
         .catch((err)=>{
             console.log(err)
         })
-   }, [])
+   }, [change])
  
 
   // 제일 처음에 화면 출력할 때 db에서 댓글 리스트 가져와서 comments에 추가
@@ -65,6 +65,8 @@ const CommentScreen = ({route}) => {
         }).then(function(resp) {
           console.log('댓글 등록 성공!');
           Alert.alert("게시글 등록 성공!", "댓글이 성공적으로 등록되었습니다.");
+          setChange(prev => prev + 1);
+          console.log("change : " + change);
         }).catch(error => {
           console.error('API 요청 에러:', error);
         })
@@ -84,6 +86,7 @@ const CommentScreen = ({route}) => {
     })
     .then((res) => {
         Alert.alert("댓글 삭제 완료", "댓글이 성공적으로 삭제되었습니다.");
+        setChange(prev => prev + 1);
     })
     .catch((err)=>{
         console.log(err)

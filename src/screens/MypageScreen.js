@@ -80,16 +80,17 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   followBtn: {
-    backgroundColor: '#C4C1CC',
+    backgroundColor: '#DCDCDC',
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 10,
+    paddingVertical: 8,
+    borderRadius: 15,
+    marginBottom: 13,
     marginRight: 5,
+    marginLeft: 5,
   },
   followBtnText: {
     color: 'black',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });
