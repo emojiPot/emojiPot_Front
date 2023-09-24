@@ -120,7 +120,9 @@ const UpdateScreen = ({route}) => {
         }).then(function(resp) {
           console.log('게시글 수정 성공!');
           Alert.alert("게시글 수정 성공!", "게시글이 성공적으로 수정되었습니다.");
+          navigation.navigate('TabNav');
         }).catch(error => {
+          Alert.alert("게시글 수정 실패!", "본인이 작성한 게시글만 수정 가능합니다.");
           console.error('API 요청 에러:', error);
         }) 
     }

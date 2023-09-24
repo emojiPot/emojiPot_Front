@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,6 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 function MainBottomContent() {
   const navigation = useNavigation();
@@ -15,16 +16,36 @@ function MainBottomContent() {
 
   const postId = 25; // 임시로 하였으며 image 테이블에서 이미지를 가져오면서 postId도 같이 가져올 수 있기 때문에 수정 필요
 
-  const searchData = [
+  const [searchData, setSearchData] = useState([
     {
       id: 0,
-      images: [
-        require('../../assest/images/post1.jpg'),
-        require('../../assest/images/post2.jpg'),
-      ],
+      images: [],
     },
-    // 필요한 경우 데이터를 추가할 수 있습니다
-  ];
+  ]);
+
+  useEffect(() => {
+      axios.get("http://localhost:8080/v1/images")
+        .then(function(resp) {
+          const images = resp.data.result;
+          // 이미지 uri에서 숫자(게시글 번호) 찾기
+          const postNumbers = images.map(image => {
+            const match = image.match(/\/(\d+)\//);
+            return match ? match[1] : null;
+          });
+
+          // 중복 제거
+          const uniquePostNumbers = [...new Set(postNumbers)];
+          const firstImages = uniquePostNumbers.map(postNumber => {
+            return images.find(image => image.includes(`/${postNumber}/`));
+          });
+          
+          const updatedSearchData = [...searchData]; 
+          updatedSearchData[0].images = firstImages; 
+          setSearchData(updatedSearchData);
+        }).catch(error => {
+          console.error('API 요청 에러:', error);
+        })
+   }, [])
 
   return (
     <View>
@@ -36,10 +57,10 @@ function MainBottomContent() {
                 <View key={imgIndex} style={styles.content}>
                   <TouchableOpacity
                       onPress={() => navigation.navigate('Detail', {
-                        postId: postId,
+                        postId: imageData.match(/\/(\d+)\//)[1],
                       })}
                     style={[{width: itemWidth}]}>
-                    <Image source={imageData} style={styles.image} />
+                    <Image source={{uri : imageData}} style={styles.image} />
                   </TouchableOpacity>
                 </View>
               );

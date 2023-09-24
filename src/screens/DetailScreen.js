@@ -27,7 +27,6 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 const DetailScreen = ({route}) => {
   const navigation = useNavigation();
   const postId = route.params.postId;
-  //const postId = 1;
   const [liked, setLiked] = useState(false);
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
@@ -35,38 +34,58 @@ const DetailScreen = ({route}) => {
   const [showCommentScreen, setShowCommentScreen] = useState(false);
   const [token, setToken] = useState('');
   const [photos, setPhotos] = useState([]);
-  
-  // 화면 시작할 때 바로 서버에서 해당 게시글의 정보 가져오기
-  useEffect(() => {
-   axios
-    .all([axios.get('http://localhost:8080/v1/posts/' + postId), axios.get('http://localhost:8080/v1/posts/' + 23 + '/images')])
-    .then(
-      axios.spread((res1, res2) => {
-        setLocation(res1.data.result.location);
-        setRecord(res1.data.result.record);
-        setPhotos(res2.data.result);
-        console.log(res2.data.result);
-      })
-    )
-  }, [])
+  const [checkMine, setCheckMine] = useState([]);
 
   // 로그인했을 때 저장한 토큰 가져오기
   const getToken = async () => {
     try {
       const storedToken = await AsyncStorage.getItem('token') || '';
-      console.log('토큰 확인');
+      console.log('토큰 확인 : ');
       console.log(storedToken);
       setToken(storedToken);
-      if (token == null) { console.log('Token not found');}
+      if (storedToken == null) { console.log('Token not found');}
     } catch (error) {
       console.error('Error retrieving token:', error);
     }
   };
 
-  // 게시글 좋아요 반영
-  const handleLikePress = () => {
+  function checkMineFun() { 
+      axios.get('http://localhost:8080/v1/posts/mine', 
+      {
+        headers: {
+          'Authorization' : 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((res) => {
+        console.log(res.data.result);
+        setCheckMine(res.data.result.map(item => item.postId));
+        console.log("checkMine 확인 출력 " + checkMine);
+      })
+      .catch((err)=>{
+        console.log("checkMine에서 오류 발생!")
+        console.log(err)
+      })
+  }
+
+  // 화면 시작할 때 바로 서버에서 해당 게시글의 정보 가져오기
+  useEffect(() => {
     getToken();
 
+    axios
+        .all([axios.get('http://localhost:8080/v1/posts/' + postId), axios.get('http://localhost:8080/v1/posts/' + postId + '/images')])
+        .then(
+            axios.spread((res1, res2) => {
+                setLocation(res1.data.result.location);
+                setRecord(res1.data.result.record);
+                setPhotos(res2.data.result);
+            })
+          )
+
+  }, [])
+
+  // 게시글 좋아요 반영
+  const handleLikePress = () => {
     console.log("token : " + token);
     axios.post("http://localhost:8080/v1/posts/" + postId + "/likes", {},
         {
@@ -96,7 +115,6 @@ const DetailScreen = ({route}) => {
 
   // 게시글 삭제
   function deletePost() {
-    getToken();
     axios.delete('http://localhost:8080/v1/posts/' + postId, 
     {
       headers: {
@@ -109,6 +127,7 @@ const DetailScreen = ({route}) => {
         navigation.goBack(null);
     })
     .catch((err)=>{
+        Alert.alert("게시글 삭제 실패", "본인이 작성한 게시글만 삭제 가능합니다.");
         console.log(err)
     })
   }
@@ -126,7 +145,7 @@ const DetailScreen = ({route}) => {
         {/* 프로필, 팔로우, 스크랩 버튼 한 묶음 */}
         <View style={styles.postHeader}>
           <Image
-            source={require('../assest/images/post2.jpg')} // 프로필 사진 경로 
+            source={require('../assest/images/post2.jpg')} // 프로필 사진
             style={styles.profileImage}
             resizeMode="cover"
           />
@@ -152,19 +171,19 @@ const DetailScreen = ({route}) => {
           {/* 좋아요 클릭 DB로 전송 */}
           <View style={styles.likeCmdBtnContainer}>
             <TouchableOpacity onPress={handleLikePress}> 
-              {liked ? <AntDesign name="hearto" size={20} color="black" marginRight={10}/> : <AntDesign name="heart" size={20} color="black" marginRight={10}/>}
+              {liked ? <AntDesign name="heart" size={20} color="black" marginRight={10}/> : <AntDesign name="hearto" size={20} color="black" marginRight={10}/>}
             </TouchableOpacity>
             <TouchableOpacity onPress={handleGoCmd}> 
               <Fontisto name="comment" size={20} color="black" />
             </TouchableOpacity>
           </View>
           <View style={styles.delUpBtnContainer}>
-            <TouchableOpacity onPress={()=>updatePost()}> 
-              <AntDesign name="ellipsis1" size={20} color="black" marginRight={10}/>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={()=>deletePost()}> 
-             <EvilIcons name="trash" size={30} color="black" marginRight={10}/>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={()=>updatePost()}> 
+                  <AntDesign name="ellipsis1" size={20} color="black" marginRight={10}/>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.deleteButton} onPress={()=>deletePost()}> 
+                  <EvilIcons name="trash" size={30} color="black" marginRight={10}/>
+                </TouchableOpacity>
           </View>
         </View>
         <View style={styles.postContent}>
