@@ -38,7 +38,7 @@ const GoogleMapUpdate = ({route}) => {
           minLength={2}
           placeholder="장소검색"
           query={{
-            key: 'AIzaSyA6PzXA9p63zeJQzDF_4lz1mchEw0cOiPg',
+            key: '',
             language: 'ko',
             components: 'country:kr',
           }}
