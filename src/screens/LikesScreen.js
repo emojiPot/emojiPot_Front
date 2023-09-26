@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity,} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,6 +17,7 @@ import Feather from "react-native-vector-icons/Feather";
 // 사진이랑 제목보이게해서 클릭하면 해당 게시물로 넘어가도록
 
 const LikesScreen = () => {
+  const navigation = useNavigation();
   const [token, setToken] = useState('');
   const [isLiked, setIsLiked] = useState([]);
 
@@ -48,7 +50,7 @@ const LikesScreen = () => {
         console.log(isLiked);
       })
       .catch((err)=>{
-        console.error('API 요청 에러:', error);
+        console.error('API 요청 에러:', err);
       })
   }, [])
 
@@ -56,20 +58,24 @@ const LikesScreen = () => {
     <FlatList
       data={isLiked}
       renderItem={({item, i}) => (
-        <View style={styles.container} key={i}>
-          <View>
-            <View style={styles.titleContainer}>
-              <Text style={styles.itemNameText}>{item.username}</Text>
-              <Text style={styles.itemContentText}>{item.createdAt}</Text>
+        <TouchableOpacity
+        onPress={() => navigation.navigate('Detail', {
+          postId: item.postId,
+        })}>
+          <View style={styles.container} key={i}>
+            <View>
+              <View style={styles.titleContainer}>
+                <Text style={styles.itemNameText}>{item.username}</Text>
+                <Text style={styles.itemContentText}>{item.createdAt}</Text>
+              </View>
+              <View style={styles.locationComponent}>
+                <Feather name="map-pin" size={15} color="black"/>
+                <Text style={styles.locationText}>{item.location}</Text>
+              </View>
+              <Text style={styles.itemContentText}>{item.record}</Text>
             </View>
-            <View style={styles.locationComponent}>
-              <Feather name="map-pin" size={15} color="black"/>
-              <Text style={styles.locationText}>{item.location}</Text>
-            </View>
-            <Text style={styles.itemContentText}>{item.record}</Text>
           </View>
-          <View></View>
-        </View>
+        </TouchableOpacity>
       )}
     />
   );

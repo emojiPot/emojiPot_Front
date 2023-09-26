@@ -36,19 +36,6 @@ const DetailScreen = ({route}) => {
   const [photos, setPhotos] = useState([]);
   const [checkMine, setCheckMine] = useState([]);
 
-  // 로그인했을 때 저장한 토큰 가져오기
-  const getToken = async () => {
-    try {
-      const storedToken = await AsyncStorage.getItem('token') || '';
-      console.log('토큰 확인 : ');
-      console.log(storedToken);
-      setToken(storedToken);
-      if (storedToken == null) { console.log('Token not found');}
-    } catch (error) {
-      console.error('Error retrieving token:', error);
-    }
-  };
-
   function checkMineFun() { 
       axios.get('http://localhost:8080/v1/posts/mine', 
       {
@@ -68,21 +55,49 @@ const DetailScreen = ({route}) => {
       })
   }
 
-  // 화면 시작할 때 바로 서버에서 해당 게시글의 정보 가져오기
   useEffect(() => {
-    getToken();
+    const fetchData = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('token') || '';
+        console.log('토큰 확인 : ');
+        console.log(storedToken);
+        setToken(storedToken);
+  
+        // 토큰이 비어있지 않은 경우에만 서버 요청을 보냄
+        if (storedToken !== '') {
+          const [res1, res2] = await axios.all([
+            axios.get('http://localhost:8080/v1/posts/' + postId),
+            axios.get('http://localhost:8080/v1/posts/' + postId + '/images')
+          ]);
+  
+          setLocation(res1.data.result.location);
+          setRecord(res1.data.result.record);
+          setPhotos(res2.data.result);
+  
+          const res3 = await axios.get('http://localhost:8080/v1/posts/' + postId + '/likes', {
+            headers: {
+              'Authorization': 'Bearer ' + storedToken,
+            }
+          });
+          setLiked(res3.data.result);
 
-    axios
-        .all([axios.get('http://localhost:8080/v1/posts/' + postId), axios.get('http://localhost:8080/v1/posts/' + postId + '/images')])
-        .then(
-            axios.spread((res1, res2) => {
-                setLocation(res1.data.result.location);
-                setRecord(res1.data.result.record);
-                setPhotos(res2.data.result);
-            })
-          )
-
-  }, [])
+          const res4 = await axios.get('http://localhost:8080/v1/posts/mine', {
+            headers: {
+              'Authorization': 'Bearer ' + storedToken,
+            }
+          });
+          setCheckMine(res4.data.result.map(item => item.postId));
+          console.log(typeof checkMine[0]);
+          console.log(typeof postId);
+          console.log(checkMine.includes(parseInt(postId)));
+        }
+      } catch (error) {
+        console.error('에러 발생:', error);
+      }
+    };
+  
+    fetchData(); // fetchData 함수 호출
+  }, []);
 
   // 게시글 좋아요 반영
   const handleLikePress = () => {
@@ -177,14 +192,17 @@ const DetailScreen = ({route}) => {
               <Fontisto name="comment" size={20} color="black" />
             </TouchableOpacity>
           </View>
-          <View style={styles.delUpBtnContainer}>
+          {
+            checkMine.includes(parseInt(postId)) ? 
+            <View style={styles.delUpBtnContainer}>
                 <TouchableOpacity onPress={()=>updatePost()}> 
                   <AntDesign name="ellipsis1" size={20} color="black" marginRight={10}/>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.deleteButton} onPress={()=>deletePost()}> 
                   <EvilIcons name="trash" size={30} color="black" marginRight={10}/>
                 </TouchableOpacity>
-          </View>
+          </View> : <View></View>
+          }
         </View>
         <View style={styles.postContent}>
           <Text style={styles.postText}>{location}</Text>
