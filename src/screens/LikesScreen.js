@@ -1,6 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import Feather from "react-native-vector-icons/Feather";
 // 반응형만들기
 // import {
 //   widthPercentageToDP as wp,
@@ -11,22 +14,59 @@ import {View, Text, StyleSheet, FlatList} from 'react-native';
 // 근데 여기에서 내가 저장한 글들의 목록을 받아오는 거기 때문에
 // data를 받아오는 Flatlist로 써두되지 않을까..?
 // 사진이랑 제목보이게해서 클릭하면 해당 게시물로 넘어가도록
+
 const LikesScreen = () => {
-  const data = [
-    {
-      title: 'woorim',
-    },
-    {
-      title: 'woorim',
-    },
-  ];
+  const [token, setToken] = useState('');
+  const [isLiked, setIsLiked] = useState([]);
+
+  const getToken = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem('token') || '';
+      console.log('토큰 확인 : ');
+      console.log(storedToken);
+      setToken(storedToken);
+      if (storedToken == null) { console.log('Token not found');}
+    } catch (error) {
+      console.error('Error retrieving token:', error);
+    }
+  };
+
+  useEffect(() => {
+    getToken();
+
+    axios.get('http://localhost:8080/v1/posts', 
+      {
+        headers: {
+          'Authorization' : 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((res) => {
+        const posts = res.data.result;
+        console.log(posts);
+        setIsLiked(posts.filter(post => post.likeNum == 1));
+        console.log(isLiked);
+      })
+      .catch((err)=>{
+        console.error('API 요청 에러:', error);
+      })
+  }, [])
+
   return (
     <FlatList
-      data={data}
+      data={isLiked}
       renderItem={({item, i}) => (
         <View style={styles.container} key={i}>
           <View>
-            <Text style={styles.itemNameText}>{item.title}</Text>
+            <View style={styles.titleContainer}>
+              <Text style={styles.itemNameText}>{item.username}</Text>
+              <Text style={styles.itemContentText}>{item.createdAt}</Text>
+            </View>
+            <View style={styles.locationComponent}>
+              <Feather name="map-pin" size={15} color="black"/>
+              <Text style={styles.locationText}>{item.location}</Text>
+            </View>
+            <Text style={styles.itemContentText}>{item.record}</Text>
           </View>
           <View></View>
         </View>
@@ -38,13 +78,11 @@ const LikesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginTop: 12,
     marginHorizontal: 12,
     paddingVertical: 12,
     paddingHorizontal: 14,
-    height: 86,
+    height: 110,
     shadowColor: '#f1f2f3',
     shadowOffset: {
       width: 0,
@@ -59,8 +97,27 @@ const styles = StyleSheet.create({
     borderColor: '#F2F3F4',
     borderWidth: 1,
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+  },
   itemNameText: {
     fontSize: 20,
+    color: 'black',
+  },
+  itemContentText: {
+    color: 'black',
+  }, 
+  locationText: {
+    color: 'black',
+    marginLeft: 5,
+  },
+  locationComponent: { 
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
   },
 });
 
