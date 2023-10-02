@@ -1,83 +1,115 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity,} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground,} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Feather from "react-native-vector-icons/Feather";
-// 반응형만들기
-// import {
-//   widthPercentageToDP as wp,
-//   heightPercentageToDP as hp,
-// } from 'react-native-responsive-screen';
-
-// flatList는 저장된 데이터를 받아오는 거기 때문에
-// 근데 여기에서 내가 저장한 글들의 목록을 받아오는 거기 때문에
-// data를 받아오는 Flatlist로 써두되지 않을까..?
-// 사진이랑 제목보이게해서 클릭하면 해당 게시물로 넘어가도록
+import { Grayscale } from 'react-native-image-filter-kit';
 
 const LikesScreen = () => {
   const navigation = useNavigation();
   const [token, setToken] = useState('');
   const [isLiked, setIsLiked] = useState([]);
 
-  const getToken = async () => {
-    try {
-      const storedToken = await AsyncStorage.getItem('token') || '';
-      console.log('토큰 확인 : ');
-      console.log(storedToken);
-      setToken(storedToken);
-      if (storedToken == null) { console.log('Token not found');}
-    } catch (error) {
-      console.error('Error retrieving token:', error);
-    }
-  };
+  const [searchData, setSearchData] = useState([
+    {
+      id: 0,
+      images: [],
+    },
+  ]);
+
 
   useEffect(() => {
-    getToken();
+    const fetchData = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('token') || '';
+        console.log('토큰 확인 : ');
+        console.log(storedToken);
+        setToken(storedToken);
+  
+        // 토큰이 비어있지 않은 경우에만 서버 요청을 보냄
+        if (storedToken !== '') {
+          const res1 = await axios.get('http://localhost:8080/v1/posts', {
+            headers: {
+              'Authorization' : 'Bearer ' + token,
+              'Content-Type': 'application/json'
+            }
+          });
+          const posts = res1.data.result;
+          console.log(posts);
+          setIsLiked(posts.filter(post => post.likeNum == 1));
+          console.log(isLiked);
 
-    axios.get('http://localhost:8080/v1/posts', 
-      {
-        headers: {
-          'Authorization' : 'Bearer ' + token,
-          'Content-Type': 'application/json'
+          const res2 = await axios.get("http://localhost:8080/v1/images");
+          const images = res2.data.result;
+
+          // 이미지 uri에서 숫자(게시글 번호) 찾기
+          const postNumbers = images.map(image => {
+            const match = image.match(/\/(\d+)\//);
+            return match ? match[1] : null;
+          });
+  
+          // 중복 제거
+          const uniquePostNumbers = [...new Set(postNumbers)];
+          const firstImages = uniquePostNumbers.map(postNumber => {
+            return images.find(image => image.includes(`/${postNumber}/`));
+          });
+
+          const updatedSearchData = [...searchData]; 
+          updatedSearchData[0].images = firstImages; 
+          setSearchData(updatedSearchData);
+
+          console.log(searchData);
         }
-      })
-      .then((res) => {
-        const posts = res.data.result;
-        console.log(posts);
-        setIsLiked(posts.filter(post => post.likeNum == 1));
-        console.log(isLiked);
-      })
-      .catch((err)=>{
-        console.error('API 요청 에러:', err);
-      })
-  }, [])
+      } catch (error) {
+        console.error('에러 발생:', error);
+      }
+    };
+  
+    fetchData(); // fetchData 함수 호출
+  }, []);
 
   return (
     <FlatList
       data={isLiked}
-      renderItem={({item, i}) => (
-        <TouchableOpacity
-        onPress={() => navigation.navigate('Detail', {
-          postId: item.postId,
-        })}>
+      renderItem={({item, i}) => {
+        const matchingImage = searchData[0].images.find(imageUrl =>
+          imageUrl.includes(`/${item.postId}/`)
+        );
+
+      return (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Detail', {
+              postId: item.postId,
+            })}
+          >
           <View style={styles.container} key={i}>
-            <View>
-              <View style={styles.titleContainer}>
-                <Text style={styles.itemNameText}>{item.username}</Text>
-                <Text style={styles.itemContentText}>{item.createdAt}</Text>
+            <ImageBackground
+              source={matchingImage ? {uri: matchingImage} : require('../assest/images/likesBasicImage.jpg')}
+              style={styles.containerBackGround}
+              blurRadius={5}
+              borderRadius={12}
+            >
+              <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.2)', borderRadius: 12,}}>
+                <View style={styles.imageContentText}>
+                  <View style={styles.titleContainer}>
+                    <Text style={styles.itemNameText}>{item.username}</Text>
+                    <Text style={styles.itemContentText}>{item.createdAt}</Text>
+                  </View>
+                  <View style={styles.locationComponent}>
+                    <Feather name="map-pin" size={15} color="white"/>
+                    <Text style={styles.locationText}>{item.location}</Text>
+                  </View>
+                  <Text style={styles.itemContentText}>{item.record}</Text>
+                </View>
               </View>
-              <View style={styles.locationComponent}>
-                <Feather name="map-pin" size={15} color="black"/>
-                <Text style={styles.locationText}>{item.location}</Text>
-              </View>
-              <Text style={styles.itemContentText}>{item.record}</Text>
-            </View>
+            </ImageBackground>
           </View>
         </TouchableOpacity>
-      )}
-    />
+      );
+    }}
+  />
   );
 };
 
@@ -86,8 +118,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     marginTop: 12,
     marginHorizontal: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
     height: 110,
     shadowColor: '#f1f2f3',
     shadowOffset: {
@@ -103,6 +133,13 @@ const styles = StyleSheet.create({
     borderColor: '#F2F3F4',
     borderWidth: 1,
   },
+  containerBackGround: {
+    flex:1,
+  },
+  imageContentText: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -111,13 +148,14 @@ const styles = StyleSheet.create({
   },
   itemNameText: {
     fontSize: 20,
-    color: 'black',
+    color: 'white',
+    fontWeight: 'bold',
   },
   itemContentText: {
-    color: 'black',
+    color: 'white',
   }, 
   locationText: {
-    color: 'black',
+    color: 'white',
     marginLeft: 5,
   },
   locationComponent: { 

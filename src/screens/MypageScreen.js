@@ -38,7 +38,7 @@ const MypageScreen = () => {
         <TouchableOpacity 
           style={styles.followBtn}
           onPress={()=>GoUpdateScreen()}>
-          <Text style={styles.followBtnText}>UPDATE</Text>
+          <Text style={styles.followBtnText}>프로필 수정</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.followBtn}
@@ -80,13 +80,16 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   followBtn: {
-    backgroundColor: '#DCDCDC',
     paddingHorizontal: 20,
     paddingVertical: 8,
-    borderRadius: 15,
+    borderRadius: 5,
+    borderColor: '#C4C1CC',
+    borderWidth: 1,
     marginBottom: 13,
     marginRight: 5,
     marginLeft: 5,
+    width: 120,
+    alignItems:'center',
   },
   followBtnText: {
     color: 'black',
