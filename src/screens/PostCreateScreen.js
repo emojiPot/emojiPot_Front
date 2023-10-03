@@ -96,9 +96,11 @@ const PostCreateScreen = () => {
     }
   };
 
-  function uploadPost() {
+  useEffect(() => {
     getToken();
+   }, [])
 
+  function uploadPost() {
     if(postText.trim() == "") {
       Alert.alert("게시글 입력 확인", "게시글은 필수 입력 사항입니다.");
     } else {

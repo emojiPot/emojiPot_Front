@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground,} fr
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useFocusEffect } from '@react-navigation/native';
 import Feather from "react-native-vector-icons/Feather";
 import { Grayscale } from 'react-native-image-filter-kit';
 
@@ -19,56 +19,57 @@ const LikesScreen = () => {
     },
   ]);
 
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedToken = await AsyncStorage.getItem('token') || '';
-        console.log('토큰 확인 : ');
-        console.log(storedToken);
-        setToken(storedToken);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const storedToken = await AsyncStorage.getItem('token') || '';
+          console.log('토큰 확인 : ');
+          console.log(storedToken);
+          setToken(storedToken);
+    
+          // 토큰이 비어있지 않은 경우에만 서버 요청을 보냄
+          if (storedToken !== '') {
+            const res1 = await axios.get('http://localhost:8080/v1/posts', {
+              headers: {
+                'Authorization' : 'Bearer ' + token,
+                'Content-Type': 'application/json'
+              }
+            });
+            const posts = res1.data.result;
+            console.log(posts);
+            setIsLiked(posts.filter(post => post.likeNum == 1));
+            console.log(isLiked);
   
-        // 토큰이 비어있지 않은 경우에만 서버 요청을 보냄
-        if (storedToken !== '') {
-          const res1 = await axios.get('http://localhost:8080/v1/posts', {
-            headers: {
-              'Authorization' : 'Bearer ' + token,
-              'Content-Type': 'application/json'
-            }
-          });
-          const posts = res1.data.result;
-          console.log(posts);
-          setIsLiked(posts.filter(post => post.likeNum == 1));
-          console.log(isLiked);
-
-          const res2 = await axios.get("http://localhost:8080/v1/images");
-          const images = res2.data.result;
-
-          // 이미지 uri에서 숫자(게시글 번호) 찾기
-          const postNumbers = images.map(image => {
-            const match = image.match(/\/(\d+)\//);
-            return match ? match[1] : null;
-          });
+            const res2 = await axios.get("http://localhost:8080/v1/images");
+            const images = res2.data.result;
   
-          // 중복 제거
-          const uniquePostNumbers = [...new Set(postNumbers)];
-          const firstImages = uniquePostNumbers.map(postNumber => {
-            return images.find(image => image.includes(`/${postNumber}/`));
-          });
-
-          const updatedSearchData = [...searchData]; 
-          updatedSearchData[0].images = firstImages; 
-          setSearchData(updatedSearchData);
-
-          console.log(searchData);
+            // 이미지 uri에서 숫자(게시글 번호) 찾기
+            const postNumbers = images.map(image => {
+              const match = image.match(/\/(\d+)\//);
+              return match ? match[1] : null;
+            });
+    
+            // 중복 제거
+            const uniquePostNumbers = [...new Set(postNumbers)];
+            const firstImages = uniquePostNumbers.map(postNumber => {
+              return images.find(image => image.includes(`/${postNumber}/`));
+            });
+  
+            const updatedSearchData = [...searchData]; 
+            updatedSearchData[0].images = firstImages; 
+            setSearchData(updatedSearchData);
+  
+            console.log(searchData);
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
         }
-      } catch (error) {
-        console.error('에러 발생:', error);
-      }
-    };
-  
-    fetchData(); // fetchData 함수 호출
-  }, []);
+      };
+    
+      fetchData(); // fetchData 함수 호출
+    }, [])
+  );
 
   return (
     <FlatList

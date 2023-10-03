@@ -34,6 +34,8 @@ const CommentScreen = ({route}) => {
   };
 
   useEffect(() => {
+    getToken();
+    
     axios.get('http://localhost:8080/v1/posts/'+postId+'/comments')
         .then((res) => {
           console.log(res.data.result);
@@ -49,8 +51,6 @@ const CommentScreen = ({route}) => {
   
   // 댓글 작성한 거 db에 전송
   const handleCommentSubmit = () => {
-    getToken();
-
     if (newComment.trim() == "") {
       Alert.alert("댓글 입력 확인", "댓글을 입력해주세요!");
     } else {

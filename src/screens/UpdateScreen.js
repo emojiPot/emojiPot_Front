@@ -34,7 +34,21 @@ const UpdateScreen = ({route}) => {
   const [record, setRecord] = useState('');
   const [token, setToken] = useState('');
 
+  const getToken = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem('token') || '';
+      console.log('토큰 확인');
+      console.log(storedToken);
+      setToken(storedToken);
+      if (token == null) { console.log('Token not found');}
+      getSearchPlace();
+    } catch (error) {
+      console.error('Error retrieving token:', error);
+    }
+  };
+
   useEffect(() => {
+    getToken();
     axios.get('http://localhost:8080/v1/posts/' + postId)
         .then((res) => {
           setLocation(res.data.result.location);
@@ -86,21 +100,7 @@ const UpdateScreen = ({route}) => {
     }
   };
 
-  const getToken = async () => {
-    try {
-      const storedToken = await AsyncStorage.getItem('token') || '';
-      console.log('토큰 확인');
-      console.log(storedToken);
-      setToken(storedToken);
-      if (token == null) { console.log('Token not found');}
-      getSearchPlace();
-    } catch (error) {
-      console.error('Error retrieving token:', error);
-    }
-  };
-
   function uploadPost() {
-    getToken();
     console.log("postId : " + postId);
     if(location.trim() == "") {
       Alert.alert("위치 입력 확인", "장소는 필수 입력 사항입니다.");
@@ -122,7 +122,7 @@ const UpdateScreen = ({route}) => {
           Alert.alert("게시글 수정 성공!", "게시글이 성공적으로 수정되었습니다.");
           navigation.navigate('TabNav');
         }).catch(error => {
-          Alert.alert("게시글 수정 실패!", "본인이 작성한 게시글만 수정 가능합니다.");
+          Alert.alert("게시글 수정 실패!", "수정 버튼을 한번 더 클릭해주세요!");
           console.error('API 요청 에러:', error);
         }) 
     }

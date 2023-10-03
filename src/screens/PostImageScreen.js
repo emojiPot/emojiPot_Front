@@ -61,9 +61,11 @@ const PostImageScreen = ({route}) => {
     }
   };
 
-  function uploadImage() {
+  useEffect(() => {
     getToken();
+   }, [])
 
+  function uploadImage() {
     console.log(selectedPhotos);
 
     const formData = new FormData();

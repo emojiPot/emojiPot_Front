@@ -37,7 +37,7 @@ function GoogleMap() {
           minLength={2}
           placeholder="장소검색"
           query={{
-            key: '',
+            key: '구글 맵 키 입력',
             language: 'ko',
             components: 'country:kr',
           }}
