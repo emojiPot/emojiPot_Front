@@ -27,7 +27,7 @@ function BackBtn() {
   return (
     <Image
       source={require('./assest/images/backBtn.png')}
-      style={{marginLeft: 20, width: 30, height: 30}}
+      style={{marginLeft: 5, width: 30, height: 30}}
     />
   );
 }
@@ -65,6 +65,8 @@ function App() {
           options={{
             title: '',
             headerBackTitleVisible: false,
+            headerLeft: () => null, 
+            headerShown: false,
           }}
         />
         <Stack.Screen

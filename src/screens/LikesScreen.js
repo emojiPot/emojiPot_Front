@@ -92,7 +92,7 @@ const LikesScreen = () => {
               blurRadius={5}
               borderRadius={12}
             >
-              <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.2)', borderRadius: 12,}}>
+              <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.2)', borderRadius: 10,}}>
                 <View style={styles.imageContentText}>
                   <View style={styles.titleContainer}>
                     <Text style={styles.itemNameText}>{item.username}</Text>
@@ -117,22 +117,20 @@ const LikesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    marginTop: 12,
+    marginTop: 10,
+    marginBottom: 10,
     marginHorizontal: 12,
-    height: 110,
-    shadowColor: '#f1f2f3',
+    height: 130,
+    shadowColor: 'black',
     shadowOffset: {
       width: 0,
-      height: 0,
+      height: 2,
     },
     shadowOpacity: 1,
     shadowRadius: 18.95,
-    elevation: 1,
+    elevation: 5,
     zIndex: 1,
-    backgroundColor: 'white',
-    borderRadius: 12,
-    borderColor: '#F2F3F4',
-    borderWidth: 1,
+    borderRadius: 10,
   },
   containerBackGround: {
     flex:1,

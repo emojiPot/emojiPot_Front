@@ -153,7 +153,7 @@ const PostCreateScreen = () => {
                 selectedEmotion === 'happy' && styles.selectedEmotion,
               ]}
               onPress={() => handleEmotionSelect(1)}>
-              <Text>HAPPY</Text>
+              <Image source={require('../assest/images/happy.png')} style={{ width: '100%', height: '100%', resizeMode: 'cover' }}/>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -161,7 +161,7 @@ const PostCreateScreen = () => {
                 selectedEmotion === 'sad' && styles.selectedEmotion,
               ]}
               onPress={() => handleEmotionSelect(2)}>
-              <Text>SAD</Text>
+              <Image source={require('../assest/images/sad.png')} style={{ width: '100%', height: '100%', resizeMode: 'cover' }}/>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -169,7 +169,7 @@ const PostCreateScreen = () => {
                 selectedEmotion === 'angry' && styles.selectedEmotion,
               ]}
               onPress={() => handleEmotionSelect(3)}>
-              <Text>ANGRY</Text>
+              <Image source={require('../assest/images/angry.png')} style={{ width: '100%', height: '100%', resizeMode: 'cover' }}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -249,8 +249,6 @@ const styles = StyleSheet.create({
   emotionIcon: { // 감정 평가 세부 이모지 스타일 설정
     width: 60,
     height: 60,
-    borderRadius: 30,
-    backgroundColor: '#C4C1CC',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -278,7 +276,7 @@ const styles = StyleSheet.create({
   },
   // 글 작성 업로드 버튼스타일
   uploadBtn: {
-    backgroundColor: '#C4C1CC',
+    backgroundColor: 'black',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
@@ -286,9 +284,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   uploadBtnText: {
-    color: 'black',
+    color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 

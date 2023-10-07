@@ -60,10 +60,7 @@ function LogoutScreen({navigation}) {
     <View style={styles.container}>
       <View style={styles.topArea}>
         <View style={styles.titleArea}>
-          <Image source={null} style={{width: wp(30), resizeMode: 'contain'}} />
-        </View>
-        <View style={styles.TextArea}>
-          <Text style={styles.Text}>로그인 해주세요!</Text>
+          <Image source={require('../assest/images/emojipot_logo.png')} style={{width: 400, height: 300, resizeMode: 'contain'}} />
         </View>
       </View>
 
@@ -104,8 +101,6 @@ const styles = StyleSheet.create({
     flex: 1, //전체의 공간을 차지한다는 의미
     flexDirection: 'column',
     backgroundColor: 'white',
-    paddingLeft: wp(7),
-    paddingRight: wp(7),
   },
   topArea: {
     flex: 1,
@@ -115,6 +110,7 @@ const styles = StyleSheet.create({
     flex: 0.7,
     justifyContent: 'center',
     paddingTop: wp(3),
+    textAlign: 'center',
   },
   TextArea: {
     flex: 0.3,
@@ -123,6 +119,7 @@ const styles = StyleSheet.create({
   },
   Text: {
     fontSize: wp('6%'),
+    color:'black',
   },
   TextValidation: {
     fontSize: wp('4%'),
@@ -134,6 +131,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // paddingTop: wp(10),
     flex: 1.5,
+    paddingLeft: wp(7),
+    paddingRight: wp(7),
   },
 
   idForm: {
@@ -168,6 +167,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: hp(1.5),
+    paddingLeft: wp(7),
+    paddingRight: wp(7),
   },
   btn: {
     flex: 1,

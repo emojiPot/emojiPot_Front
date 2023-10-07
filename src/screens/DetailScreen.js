@@ -23,12 +23,14 @@ import Swiper from 'react-native-swiper';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const DetailScreen = ({route}) => {
   const navigation = useNavigation();
   const postId = route.params.postId;
   const [liked, setLiked] = useState(false);
   const [location, setLocation] = useState("");
+  const [userName, setUserName] = useState("");
   const [date, setDate] = useState("");
   const [record, setRecord] = useState("");
   const [showCommentScreen, setShowCommentScreen] = useState(false);
@@ -69,11 +71,13 @@ const DetailScreen = ({route}) => {
             axios.get('http://localhost:8080/v1/posts/' + postId),
             axios.get('http://localhost:8080/v1/posts/' + postId + '/images')
           ]);
-  
+          
           setLocation(res1.data.result.location);
           setRecord(res1.data.result.record);
+          setDate(res1.data.result.createdAt);
           setPhotos(res2.data.result);
-  
+          setUserName(res1.data.result.username);
+
           const res3 = await axios.get('http://localhost:8080/v1/posts/' + postId + '/likes', {
             headers: {
               'Authorization': 'Bearer ' + storedToken,
@@ -205,8 +209,13 @@ const DetailScreen = ({route}) => {
           }
         </View>
         <View style={styles.postContent}>
-          <Text style={styles.postText}>{location}</Text>
-          <Text style={styles.postText}>{record}</Text>
+          <View style={styles.locatonIcon}>
+            <MaterialIcons name="edit-location-alt" size={17} color="#D89196" marginRight={7} />
+            <Text style={[styles.postText, {fontWeight: 'bold', fontSize: 14, marginTop: 5,}]}>{location}</Text>
+          </View>
+          <Text style={[styles.postText, {color: '#666A73', fontWeight: 'bold'}]}>{userName}</Text>
+          <Text style={[styles.postText, {color: '#A9A9A9', fontWeight: 'bold'}]}>{date}</Text>
+          <Text style={[styles.postText, {marginTop: 10,}]}>{record}</Text>
         </View>
       </View>
     </ScrollView>
@@ -290,12 +299,16 @@ const styles = StyleSheet.create({
   },
   postText: {
     color: '#343639',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   postContent: {
     flexDirection: 'col',
     paddingHorizontal: 10,
-  }
+  }, 
+  locatonIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 export default DetailScreen;

@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     color: '#808080',
   },
   uploadBtn: {
-    backgroundColor: '#C4C1CC',
+    backgroundColor: 'black',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   uploadBtnText: {
-    color: 'black',
+    color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },

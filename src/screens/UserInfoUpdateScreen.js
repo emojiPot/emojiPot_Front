@@ -122,7 +122,8 @@ const UserInfoUpdateScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollComponent}>
+      <ScrollView>
+        <Text style={styles.TitleText}>프로필 설정</Text>
         <View style={styles.profileComponent}>
           <View style={styles.profileImageContainer}>
             <Image
@@ -175,12 +176,17 @@ const styles = StyleSheet.create({
     paddingRight: wp(7),
     paddingTop: hp(3),
   },
-  scrollComponent: {
-    marginTop: hp(10),
-  },
   component: {
     paddingBottom: hp(2),
     marginBottom: hp(3),
+  },
+  TitleText: {
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 40,
+    paddingBottom: 10,
+    borderColor: '#C4C1CC',
+    borderBottomWidth: 1,
   },
   profileComponent: {
     alignItems: 'center',
@@ -199,7 +205,7 @@ const styles = StyleSheet.create({
   },
   // 버튼스타일
   uploadBtn: {
-    backgroundColor: '#C4C1CC',
+    backgroundColor: 'black',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
@@ -207,12 +213,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   uploadBtnText: {
-    color: 'black',
+    color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
   },
   postTextInput: {
-    borderColor: '#C4C1CC',
+    borderColor: '#D89196',
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
@@ -221,6 +226,7 @@ const styles = StyleSheet.create({
   },
   TextStyle: {
     color: 'black',
+    fontWeight: 'bold',
   }
 });
 
